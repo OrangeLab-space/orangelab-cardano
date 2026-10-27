@@ -1,0 +1,11 @@
+node_modules/
+bin/
+
+# Stack configuration holds secrets (database password); keep it local.
+Pulumi.*.yaml
+Pulumi.*.yaml.bak.*
+
+*.js
+*.js.map
+*.d.ts
+*.d.ts.map

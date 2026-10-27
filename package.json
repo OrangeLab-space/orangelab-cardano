@@ -1,0 +1,21 @@
+{
+    "name": "orangelab-cardano",
+    "description": "OrangeLab Cardano + Midnight Stack",
+    "version": "0.1.0",
+    "private": true,
+    "license": "MIT",
+    "engines": {
+        "node": ">= 22.0.0"
+    },
+    "scripts": {
+        "test": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@orangelab/pulumi": "^0.8.0",
+        "@pulumi/pulumi": "3.261.0"
+    },
+    "devDependencies": {
+        "@types/node": "25.7.0",
+        "typescript": "5.9.3"
+    }
+}

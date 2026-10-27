@@ -1,0 +1,48 @@
+name: orangelab-cardano
+main: index.ts
+runtime:
+    name: nodejs
+    options:
+        typescript: true
+        packagemanager: npm
+description: OrangeLab Cardano + Midnight Stack
+config:
+    # Required shared defaults (duplicated from root Pulumi.yaml)
+    # orangelab:routingProvider: tailscale | traefik
+    # orangelab:coreStackRef: <organization/project/stack>
+    prometheus:enabled: false
+    prometheus:enableComponentMonitoring: false
+    cloudnative-pg:enabled: true
+    mariadb-operator:enabled: false
+    # longhorn:backupAllVolumes: false # read from the core stack by default
+
+    cardano:image: ghcr.io/intersectmbo/cardano-node:11.0.1
+    cardano:network: preprod
+    cardano:storageSize: 120Gi
+    cardano:storageClass: longhorn-large
+    cardano:storage/backupEnabled: false
+    cardano:db-sync/image: ghcr.io/intersectmbo/cardano-db-sync:13.7.1.0
+    cardano:db/storageSize: 50Gi
+    # Keep the DB cluster while cardano:storageOnly stops the cardano deployment
+    # cardano:db/enabled: true
+    # Persist the generated DB password before restore/recreate (restore-critical)
+    # cardano:db/password:
+    #     secure: <password>
+    # Set after cloning the initialized cardano-db-1 volume; do not create it empty
+    # cardano:db/fromVolume: cardano-db
+    cardano:postgres/storageClass: longhorn-large
+    cardano:db/image: ghcr.io/cloudnative-pg/postgresql:17.11-system-trixie
+    # db-sync creates its own schema; CNPG's app user is not a superuser by default
+    cardano:db/postInitApplicationSQL: 'ALTER ROLE "cardano" WITH SUPERUSER;'
+    cardano:db/resources:
+        value:
+            requests:
+                cpu: '1'
+                memory: 4Gi
+            limits:
+                cpu: '4'
+                memory: 8Gi
+    # Deploys to any node by default. Pin when using local storage or a dedicated disk.
+    # cardano:requiredNodeLabel: kubernetes.io/hostname=<host>
+    # Pin the cardano volume with cardano:requiredVolumeLabel and the DB volume
+    # with cardano:db/requiredVolumeLabel.
