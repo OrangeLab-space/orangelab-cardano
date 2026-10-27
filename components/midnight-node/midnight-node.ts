@@ -68,9 +68,13 @@ export class MidnightNode extends pulumi.ComponentResource {
             envSecret: {
                 DB_SYNC_POSTGRES_CONNECTION_STRING: this.getConnectionString(),
             },
-            // The node's /health endpoint is localhost-only: the kubelet gets
-            // HTTP 403 from the pod IP, so an HTTP probe can never pass. Health
-            // is verified with `kubectl exec ... curl localhost:9944/health`.
+            // `--rpc-cors all` disables the RPC host filter, so /health is
+            // reachable on the pod IP. It returns 200 while syncing, so the
+            // readiness probe means RPC is up, not caught up; /health/readiness
+            // is the caught-up signal.
+            healthCheck: {
+                httpGet: { path: '/health' },
+            },
             image: config.require(this.name, 'image'),
             initContainers: [this.args.dbWaitContainer],
             ports: [

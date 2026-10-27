@@ -20,20 +20,11 @@ PostgreSQL database and exposes a cluster-only JSON-RPC endpoint on port 9944.
 
 ## Storage
 
-The node uses the static `midnight-node` Longhorn volume, created with the
-other Cardano volumes in the Longhorn UI (250Gi, 1 replica, Block Device, v1,
-ReadWriteOnce, `cardano` disk selector). Before enabling it, set the volume and
-node pinning:
-
-```sh
-pulumi config set midnight-node:fromVolume midnight-node
-pulumi config set midnight-node:requiredVolumeLabel kubernetes.io/hostname=<node>
-```
-
-If the volume uses `strict-local` data locality, its `nodeID` must be the same
-node as the static PV. A `strict-local` volume pinned to another node has an
-unschedulable replica, and the pod stays in `FailedAttachVolume` with
-`volume ... detached state with some un-schedulable replicas`.
+The node writes its database to `/node` on a dynamic `250Gi` Longhorn volume
+using `longhorn-large` (one replica). The volume survives `pulumi up` and is
+deleted by `pulumi destroy`; nothing needs to be created in advance. Use
+`midnight-node:storageSize` and `midnight-node:storageClass` to change the size
+or class, and `midnight-node:requiredNodeLabel` to pin the pod to one host.
 
 ## Resources
 
@@ -70,9 +61,16 @@ pulumi up
 | `midnight-node:reservedNodes`            | unset                       | Reserved peers; required when validator is true |
 | `midnight-node:storageSize`              | `250Gi`                     | Node database volume                            |
 | `midnight-node:storageClass`             | `longhorn-large`            | One replica storage class                       |
-| `midnight-node:fromVolume`               | `midnight-node`             | Attach the static Longhorn volume               |
+| `midnight-node:fromVolume`               | unset                       | Attach a named volume instead of dynamic        |
 | `midnight-node:requiredNodeLabel`        | unset                       | Pin the node to one host                        |
-| `midnight-node:requiredVolumeLabel`      | unset                       | Pin the static PV to one host                   |
+| `midnight-node:requiredVolumeLabel`      | unset                       | Pin an attached named volume to one host        |
+
+## Metrics
+
+The node runs with `--prometheus-external` and serves Prometheus metrics at
+`/metrics` on port `9615`. The `midnight-node` Service exposes it as `metrics`,
+and the [monitoring setup](../monitoring/README.md) scrapes it through the
+`midnight-node` ServiceMonitor.
 
 ## Verify
 
@@ -84,17 +82,19 @@ Look for the peer count and a `best: #` value that increases. While the node is
 catching up the sync line starts with `Syncing`; it clears when `best` reaches
 `target`. Epoch and committee lines appear as sessions rotate.
 
-The `/health` endpoint is **localhost-only**: it returns HTTP 200 from inside
-the container but HTTP 403 to the kubelet's pod-IP request. The deployment
-therefore has no HTTP probes. Check it from inside the pod:
+The `/health` endpoint is reachable on the pod IP: the component runs with
+`--rpc-cors all`, which disables Substrate's RPC host filter. Check it from
+inside the pod or through a port-forward:
 
 ```sh
 kubectl -n midnight-node exec deploy/midnight-node -c midnight-node -- \
     curl -s http://localhost:9944/health
 ```
 
-Do not add an HTTP liveness/readiness probe for `/health`; it will crash-loop
-the pod on the first probe failure.
+The deployment probes `/health` for liveness, readiness, and startup. Because
+`/health` returns 200 while syncing, readiness means the RPC is up, not that the
+node is caught up. Use `/health/readiness` manually if you need the caught-up
+signal.
 
 ## Validator mode
 
@@ -111,14 +111,11 @@ peer IDs, and reserved peer list are not public; see
   encode reserved characters (`/`, `+`, `=`) as `%2F`, `%2B`, `%3D`. Otherwise
   the parser treats the `/` as the end of the URL authority and the node fails
   with `failed to lookup address information: Name or service not known`.
-- The `/health` endpoint is localhost-only. Kubernetes HTTP probes receive 403
-  from the pod IP, so the deployment omits probes. Verify health with
-  `kubectl exec ... curl localhost:9944/health`.
 - The RPC host filter only accepts `localhost:9944` by default, so other pods
-  cannot reach it. The component passes `--rpc-cors all` to allow in-cluster
-  clients; the port stays cluster-only and `--rpc-methods safe` still applies.
-- A `strict-local` Longhorn volume must be pinned to the same node as the PV.
-  Re-pin its `nodeID` if the replica is unschedulable.
+  cannot reach it. The component passes `--rpc-cors all` to disable the filter;
+  the port stays cluster-only and `--rpc-methods safe` still applies. Tightening
+  CORS to a list re-enables the filter and breaks in-cluster consumers and
+  pod-IP health checks.
 - Deploying before DB Sync is synced leaves the node waiting. It logs
   `No latest block on chain`; this is expected.
 - The node logs `Skipping token bridge transfer observation. Pallet not

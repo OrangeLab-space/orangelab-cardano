@@ -49,18 +49,10 @@ network setting.
 
 ## Storage
 
-One volume holds `/data`: `indexer.sqlite` for the chain data and
-`ledger-db.sqlite` for the ledger state. The data is reconstructible, so a
-dynamic volume works. To use a named Longhorn volume instead, create
-`midnight-indexer` (250Gi, 1 replica, Block Device, v1, ReadWriteOnce) and
-attach it:
-
-```sh
-pulumi config set midnight-indexer:fromVolume midnight-indexer
-pulumi config set midnight-indexer:requiredVolumeLabel kubernetes.io/hostname=<node>
-```
-
-The indexer indexes from genesis, so it starts at height 0 on a fresh volume and
+One dynamic `250Gi` Longhorn volume (`longhorn-large`) holds `/data`:
+`indexer.sqlite` for the chain data and `ledger-db.sqlite` for the ledger state.
+The data is reconstructible, so the volume can be deleted and recreated. The
+indexer indexes from genesis, so it starts at height 0 on a fresh volume and
 trails the node until it catches up.
 
 ## Resources
@@ -79,9 +71,9 @@ than from an idle pod.
 | `midnight-indexer:blockfrostId`        | unset                                      | Blockfrost project id, SPO stake data only |
 | `midnight-indexer:storageSize`         | `250Gi`                                    | Volume for `/data`                         |
 | `midnight-indexer:storageClass`        | `longhorn-large`                           | One replica storage class                  |
-| `midnight-indexer:fromVolume`          | unset                                      | Attach a named Longhorn volume             |
+| `midnight-indexer:fromVolume`          | unset                                      | Attach a named volume instead of dynamic   |
 | `midnight-indexer:requiredNodeLabel`   | unset                                      | Pin the pod to one host                    |
-| `midnight-indexer:requiredVolumeLabel` | unset                                      | Pin the static PV to one host              |
+| `midnight-indexer:requiredVolumeLabel` | unset                                      | Pin an attached named volume to one host   |
 
 ## Verify
 
