@@ -1,4 +1,10 @@
-import { Application, config, DatabaseConfig, SidecarSpec } from '@orangelab/pulumi';
+import {
+    Application,
+    config,
+    DatabaseConfig,
+    InitContainerSpec,
+    SidecarSpec,
+} from '@orangelab/pulumi';
 import * as pulumi from '@pulumi/pulumi';
 import assert from 'assert';
 
@@ -15,6 +21,8 @@ import assert from 'assert';
 export class Cardano extends pulumi.ComponentResource {
     public readonly app: Application;
     public readonly dbConfig: DatabaseConfig;
+    /** Init container that waits for the Cardano database to accept connections. */
+    public readonly dbWaitContainer: InitContainerSpec;
 
     constructor(
         private readonly name: string,
@@ -29,18 +37,17 @@ export class Cardano extends pulumi.ComponentResource {
         const databases = this.app.databases;
         assert(databases);
         this.dbConfig = databases.getConfig();
+        this.dbWaitContainer = databases.getWaitContainer(this.dbConfig);
         this.createDeployment();
     }
 
     private createDeployment() {
         const network = config.require(this.name, 'network');
-        const databases = this.app.databases;
-        assert(databases);
 
         this.app.addDeployment({
             env: { NETWORK: network },
             image: config.require(this.name, 'image'),
-            initContainers: [databases.getWaitContainer(this.dbConfig)],
+            initContainers: [this.dbWaitContainer],
             ports: [{ name: 'p2p', port: 3001, protocol: 'tcp', private: true }],
             resources: {
                 requests: { cpu: '1', memory: '6Gi' },

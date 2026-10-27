@@ -46,3 +46,40 @@ config:
     # cardano:requiredNodeLabel: kubernetes.io/hostname=<host>
     # Pin the cardano volume with cardano:requiredVolumeLabel and the DB volume
     # with cardano:db/requiredVolumeLabel.
+
+    midnight-node:enabled: false
+    midnight-node:image: ghcr.io/midnightntwrk/midnight-node:1.0.400
+    midnight-node:network: preprod
+    midnight-node:bootnodes: '/dns/bootnode-1.preprod.midnight.network/tcp/30333/ws/p2p/12D3KooWQxxUgq7ndPfAaCFNbAxtcKYxrAzTxDfRGNktF75SxdX5,/dns/bootnode-2.preprod.midnight.network/tcp/30333/ws/p2p/12D3KooWNrUBs22FfmgjqFMa9ZqKED2jnxwsXWw5E4q2XVwN35TJ'
+    # Required; use a name unique on the network
+    # midnight-node:nodeName: <node-name>
+    midnight-node:cardanoSecurityParameter: 2160
+    midnight-node:poolLimit: 35
+    # FNO docs use 30; the preprod chain config uses 10
+    midnight-node:blockStabilityMargin: 10
+    # v1 uses non-SSL inside the cluster; see RUNBOOK for the TLS path
+    midnight-node:allowNonSsl: true
+    # Validator mode needs the Foundation-provided overlay and reserved peer list
+    midnight-node:validator: false
+    # midnight-node:reservedNodes: <reserved-node>,<reserved-node>
+    midnight-node:storageSize: 250Gi
+    midnight-node:storageClass: longhorn-large
+    midnight-node:storage/backupEnabled: false
+    # midnight-node:requiredNodeLabel: kubernetes.io/hostname=<host>
+    # midnight-node:requiredVolumeLabel: kubernetes.io/hostname=<host>
+
+    # Requires a node rebuilt with --state-pruning archive; the FNO node is pruned
+    midnight-indexer:enabled: false
+    midnight-indexer:image: midnightntwrk/indexer-standalone:4.3.800
+    midnight-indexer:storageSize: 250Gi
+    midnight-indexer:storageClass: longhorn-large
+    midnight-indexer:storage/backupEnabled: false
+    # Required before enabling; generate with `openssl rand -hex 32`
+    # midnight-indexer:secret:
+    #     secure: <hex-32-bytes>
+    #
+    # Optional Blockfrost project id, used only for SPO stake data
+    # midnight-indexer:blockfrostId:
+    #     secure: <project-id>
+    # midnight-indexer:requiredNodeLabel: kubernetes.io/hostname=<host>
+    # midnight-indexer:requiredVolumeLabel: kubernetes.io/hostname=<host>
