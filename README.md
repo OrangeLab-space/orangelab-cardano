@@ -19,6 +19,12 @@ track. The bundled stack config targets preprod; `cardano:network` and
 The full FNO walkthrough, including DB Sync verification and the gated validator
 steps, is in [RUNBOOK.md](./RUNBOOK.md).
 
+## Security
+
+Key storage, rotation, and incident response are documented in
+[SECURITY.md](./SECURITY.md). The default stack is a full node; validator key
+controls apply only when `midnight-node:validator` is enabled.
+
 ## Networks
 
 `cardano:network` and `midnight-node:network` select the Cardano and Midnight

@@ -9,3 +9,6 @@ Pulumi.*.yaml.bak.*
 *.js.map
 *.d.ts
 *.d.ts.map
+
+# Runtime output from the Section 3 automation scripts.
+out/
