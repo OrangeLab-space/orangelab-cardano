@@ -26,7 +26,8 @@ config:
     cardano:db/storageSize: 50Gi
     # Keep the DB cluster while cardano:storageOnly stops the cardano deployment
     # cardano:db/enabled: true
-    # Persist the generated DB password before restore/recreate (restore-critical)
+    # Persist the DB password before restore/recreate (restore-critical).
+    # Set it before the first deploy, or save the generated value afterward.
     # cardano:db/password:
     #     secure: <password>
     # Set after cloning the initialized cardano-db-1 volume; do not create it empty

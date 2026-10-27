@@ -80,6 +80,9 @@ pulumi stack init lab-cardano
 pulumi config set orangelab:routingProvider traefik   # or tailscale
 pulumi config set orangelab:coreStackRef <core-stack-ref>
 
+# Generate the DB password once; keep it stable across restores.
+pulumi config set --secret cardano:db/password "$(openssl rand -hex 32)"
+
 # Optional: pin all Cardano/Midnight pods to one node.
 pulumi config set cardano:requiredNodeLabel kubernetes.io/hostname=<node>
 pulumi config set midnight-node:requiredNodeLabel kubernetes.io/hostname=<node>

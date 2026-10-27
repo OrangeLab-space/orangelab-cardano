@@ -23,6 +23,8 @@ Prometheus Operator/Grafana stack.
 pulumi stack init lab-cardano
 pulumi config set orangelab:coreStackRef <core-stack-ref>
 pulumi config set orangelab:routingProvider traefik  # or tailscale
+# Generate the DB password once; keep it stable across restores.
+pulumi config set --secret cardano:db/password "$(openssl rand -hex 32)"
 pulumi up
 ```
 

@@ -44,15 +44,25 @@ while Midnight runs stops it.
 
 ### Persist the database password
 
-Persist the generated DB password before cloning. The new stack would otherwise
-generate a new password while the cloned database keeps the old role password.
+If you are creating the stack from scratch, set the password before the first
+`pulumi up`. No need to read a generated value later:
 
 ```sh
-# Run in your terminal; this prints the generated password.
-pulumi stack output apps --show-secrets --json | jq -r '.cardano.db.password'
+pulumi config set --secret cardano:db/password "$(openssl rand -hex 32)"
+```
 
+If the stack already exists, Pulumi generated the password on first deploy.
+Persist that existing value before cloning. Run this in your terminal:
+
+```sh
+pulumi stack output apps --show-secrets --json | jq -r '.cardano.db.password'
 pulumi config set --secret cardano:db/password '<value>'
 ```
+
+Do not set a new password on an existing initialized database: the role password
+inside the data volume would not match. If you must rotate it, update the
+PostgreSQL role first, then set the config. If the volume came from another
+stack, use that stack's password or reset the role in the clone.
 
 ### Clone to named volumes
 
