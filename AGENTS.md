@@ -12,10 +12,10 @@ and an optional Midnight indexer. It consumes the published
 The Pulumi stack is `lab-cardano`. Run Pulumi from the repository root.
 
 Read [`README.md`](./README.md) for the stack layout,
-[`RUNBOOK.md`](./RUNBOOK.md) for the operational walkthrough, and
-[`SECURITY.md`](./SECURITY.md) for key management and incident response. The
-runbook is the source of truth for deployment, evidence capture, static volumes,
-and shutdown.
+[`RUNBOOK.md`](./RUNBOOK.md) for the operational walkthrough,
+[`SECURITY.md`](./SECURITY.md) for key management and incident response, and
+[`evidence/README.md`](./evidence/README.md) for evidence capture. The runbook is
+the source of truth for deployment, static volumes, and shutdown.
 
 ## External Stack Boundary
 
@@ -128,9 +128,10 @@ and shutdown.
 
 ## Evidence and Scripts
 
-- `scripts/capture-evidence.sh` writes one UTC-stamped directory under
+- `evidence/capture-evidence.sh` writes one UTC-stamped directory under
   `evidence/`. Capture twice, at least 10 minutes apart, so the pair shows block
-  progression. Remove older evidence runs only after the new pair is verified.
+  progression. Evidence docs live in `evidence/README.md`. Remove older runs
+  only after the new pair is verified.
 - Evidence contains no secrets, but it can contain internal cluster IPs,
   hostnames, node names, and public on-chain data (addresses, transaction hashes,
   and amounts in Midnight logs). Do not add credentials or other secrets. Review

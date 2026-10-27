@@ -1,48 +1,52 @@
 # Cardano Stack
 
-Cardano and Midnight nodes for the Midnight Foundation Node Operator (FNO)
-track. The bundled stack config targets preprod; `cardano:network` and
-`midnight-node:network` select the network.
+Cardano relay + DB Sync + PostgreSQL, a Midnight full node, and an optional
+Midnight indexer. Pulumi TypeScript on the OrangeLab library.
 
-**Prerequisite**: Core stack must be deployed first (network, storage,
-`cloudnative-pg`, and the Prometheus Operator/Grafana monitoring stack).
+`cardano:network` and `midnight-node:network` must match. The stack defaults to
+`preprod`; the docs stay network-agnostic.
+
+**Prerequisite:** OrangeLab core stack with Longhorn, CloudNativePG, and the
+Prometheus Operator/Grafana stack.
 
 ## Components
 
-- [Cardano Node + DB Sync](./components/cardano/cardano.md) — Cardano relay,
-  `cardano-db-sync`, and PostgreSQL
-- [Midnight Node](./components/midnight-node/midnight-node.md) — Midnight full
-  node
-- [Midnight Indexer](./components/midnight-indexer/midnight-indexer.md) — GraphQL
-  indexer for the Midnight node (optional; requires an archive node)
+| Component                                                             | Purpose                                            |
+| --------------------------------------------------------------------- | -------------------------------------------------- |
+| [Cardano + DB Sync](./components/cardano/cardano.md)                  | Cardano relay, DB Sync, and PostgreSQL             |
+| [Midnight Node](./components/midnight-node/midnight-node.md)          | Midnight full node                                 |
+| [Midnight Indexer](./components/midnight-indexer/midnight-indexer.md) | Optional GraphQL indexer; requires archive pruning |
 
-The full FNO walkthrough, including DB Sync verification and the gated validator
-steps, is in [RUNBOOK.md](./RUNBOOK.md).
+## Quick start
 
-## Security
+```sh
+pulumi stack init lab-cardano
+pulumi config set orangelab:coreStackRef <core-stack-ref>
+pulumi config set orangelab:routingProvider traefik  # or tailscale
+pulumi up
+```
 
-Key storage, rotation, and incident response are documented in
-[SECURITY.md](./SECURITY.md). The default stack is a full node; validator key
-controls apply only when `midnight-node:validator` is enabled.
+DB Sync replays Cardano from genesis; on preprod this takes six hours or more.
 
-## Networks
+```sh
+./scripts/cardano-cli.sh query tip
+./scripts/db-sync-progress.sh
+```
 
-`cardano:network` and `midnight-node:network` select the Cardano and Midnight
-network presets and must match. The bundled `Pulumi.yaml` uses `preprod`; set
-both keys, and the Midnight bootnodes, when targeting another network.
+Enable Midnight only when DB Sync matches the Cardano tip:
 
-## Evidence
+```sh
+pulumi config set midnight-node:nodeName <node-name>
+pulumi config set midnight-node:enabled true
+pulumi up
+```
 
-[`evidence/`](./evidence) holds point-in-time snapshots of the running stack:
-Cardano tip, DB Sync block height, Midnight sync line and peer count, pod
-restart counts, and recent logs. Each run of `scripts/capture-evidence.sh` writes
-a new UTC-stamped directory, so two captures show block progression. Commit them
-as-is; they contain no secrets.
+Full sequence, static volumes, validator mode, and troubleshooting:
+[RUNBOOK.md](./RUNBOOK.md).
 
 ## Storage
 
-The simple setup uses dynamic Longhorn volumes with `longhorn-large` (one
-replica); no volumes need to be created in advance:
+The default is dynamic Longhorn (`longhorn-large`, one replica):
 
 | Volume             | Size  |
 | ------------------ | ----- |
@@ -51,89 +55,84 @@ replica); no volumes need to be created in advance:
 | `midnight-node`    | 250Gi |
 | `midnight-indexer` | 250Gi |
 
-The single `cardano` volume holds both data trees: the node writes `/data/db`
-and DB Sync writes `/var/lib/cexplorer`. The `midnight-node` volume is created
-empty when the Midnight node is enabled.
+`pulumi destroy` deletes dynamic volumes. For named volumes that survive
+destroy, see [static volumes](./RUNBOOK.md#static-volumes).
 
-The class has no disk selector, so a dynamic replica may land on another node's
-default disk. Exclude unwanted nodes with Longhorn node scheduling.
+## Monitoring (Section 2)
 
-Dynamic volumes survive `pulumi up` but are deleted by `pulumi destroy`; use
-named volumes if the data must outlive the stack. See
-[RUNBOOK.md](./RUNBOOK.md#static-volumes) for the clone/redeploy workflow.
+All monitoring assets live in [components/monitoring](./components/monitoring).
+`pulumi up` installs the ServiceMonitors, Prometheus rules, and Grafana
+dashboard.
 
-## Configure Applications
+| Alert                     | Signal                                       | Response                                                             |
+| ------------------------- | -------------------------------------------- | -------------------------------------------------------------------- |
+| `CardanoTipStalled`       | Tip unchanged for 15 minutes                 | Check logs, peers, disk, and DB Sync. Do not restart blindly.        |
+| `MidnightBlockStalled`    | Best block unchanged for 15 minutes          | Check the database, RPC, peers, and node logs.                       |
+| `MidnightPeersLow`        | Peer count below 3 for 10 minutes            | Check bootnodes, network reachability, and firewall rules.           |
+| `NodeContainerRestarting` | Any container restart in the last 15 minutes | Inspect previous logs and exit code; repeated restarts are critical. |
 
-### Cardano Node + DB Sync
+The alerts are outcome-based. CPU and memory are dashboard signals, not pages:
+sync bursts are normal and Midnight memory is mostly reclaimable page cache.
+This is a full node, so validator-only alerts stay out of scope.
 
-This is the long pole. It has no `enabled` flag; every `pulumi up` deploys it.
+Details and verification commands:
+[components/monitoring/README.md](./components/monitoring/README.md).
 
-```sh
-pulumi up
-```
+## Automation scripts (Section 3)
 
-DB Sync replays the Cardano chain from genesis; on preprod this takes six hours
-or more. Leave it running and verify progress with
-`./scripts/db-sync-progress.sh`.
+All three options are implemented in Python 3 using only the standard library.
 
-### Midnight Node
+| Script                                                                           | Option | Purpose                                                       |
+| -------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------- |
+| [`collect-fno-keys.py`](./scripts/collect-fno-keys.py)                           | A      | Collect FNO public keys; report responders and non-responders |
+| [`send-maintenance-notification.py`](./scripts/send-maintenance-notification.py) | B      | Send or dry-run a maintenance window; flag missing acks       |
+| [`node-health-check.py`](./scripts/node-health-check.py)                         | C      | Poll metrics, write a health report, and diff regressions     |
 
-Enable only after DB Sync has reached the Cardano tip.
+Usage, options, outputs, and exit codes:
+[scripts/README.md](./scripts/README.md).
 
-```sh
-pulumi config set midnight-node:nodeName <node-name>
-pulumi config set midnight-node:enabled true
-pulumi up
-```
+## Security (Section 4)
 
-See the [Midnight node docs](./components/midnight-node/midnight-node.md) for
-the optional validator settings.
+Key storage, rotation, and incident response:
+[SECURITY.md](./SECURITY.md). The default is a full node; session-key controls
+apply when `midnight-node:validator` is true.
 
-## Monitoring
+## Evidence (Section 1)
 
-`pulumi up` installs Prometheus ServiceMonitors, alert rules, and a Grafana
-dashboard for the Cardano and Midnight nodes. Metrics and alert definitions live
-in the [monitoring component](./components/monitoring); see
-[`components/monitoring/README.md`](./components/monitoring/README.md) for the
-manifests, verification commands, and operational responses.
+Captures, capture script, and evidence notes live in
+[`evidence/`](./evidence). See [evidence/README.md](./evidence/README.md) for
+the captured heights and file list. The folder is self-contained and can be
+included or omitted as a unit.
 
-The alerts are deliberately outcome-based rather than CPU/memory-based:
+## Infrastructure as Code
 
-| Alert                     | Why it matters                                                         | Response                                                                  |
-| ------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `CardanoTipStalled`       | A node not receiving blocks cannot feed DB Sync.                       | Check node logs, peers, disk, and DB Sync before restarting.              |
-| `MidnightBlockStalled`    | The Midnight node is not importing blocks.                             | Check the database connection, RPC, peers, and node logs.                 |
-| `MidnightPeersLow`        | Low peers risk a sync stall and isolate the node.                      | Check bootnodes, network reachability, and firewall rules.                |
-| `NodeContainerRestarting` | Restarts can indicate OOM, bad configuration, or a failing dependency. | Inspect previous logs and exit code; treat repeated restarts as critical. |
+This stack uses Pulumi, not Terraform. The Section 5 equivalents are:
 
-CPU and memory are on the dashboard for diagnosis, but they are not paging
-alerts: Midnight memory is dominated by reclaimable page cache, and CPU bursts
-during sync are normal. This is a full node, not a validator, so validator-only
-block-production alerts are out of scope until validator mode is enabled.
+- **Modules:** `components/cardano`, `midnight-node`, `midnight-indexer`, and
+  `monitoring`.
+- **Environments:** `Pulumi.yaml` defaults plus stack config; network keys select
+  the target.
+- **State:** the Pulumi backend; use a remote backend with locking for shared
+  environments.
+- **Dependencies:** `index.ts` wires Cardano → Midnight → optional indexer; DB
+  Sync waits on the node socket.
+- **Checks:** `npm test` (typecheck only) and `pulumi preview --diff`.
+- **Deploy:** `pulumi up`; teardown: `pulumi destroy`.
 
-## Automation Scripts (Section 3)
+## Assumptions
 
-All three Section 3 options are implemented under [`scripts/`](./scripts):
-key collection (A), maintenance notification (B), and the node health checker
-(C). They use only the Python standard library, and mock fixtures make each flow
-runnable offline. See [`scripts/README.md`](./scripts/README.md) for detailed
-usage, options, output formats, and exit codes.
+- One Kubernetes cluster with the OrangeLab core stack already deployed.
+- Dynamic Longhorn storage is acceptable; there is no HA.
+- The stack runs a full node. Validator keys and the WireGuard overlay are gated.
+- Preprod is the default; other networks need matching config and bootnodes.
+- Lab secrets live in Pulumi state; production uses external secret management.
 
-## Sizing
+## Trade-offs and next steps
 
-The data footprint depends on the network. On preprod, the Cardano node is about
-12 GiB, DB Sync PostgreSQL about 16 GiB, and DB Sync ledger state about 2 GiB.
-The defaults here allocate a 120 GiB shared Cardano volume, 50 GiB for
-PostgreSQL, and a 250 GiB Midnight node volume. The optional Midnight indexer
-adds its own 250 GiB volume; it re-indexes from genesis, so it can be recreated
-at any time.
-
-The FNO minimum is 8 cores, 32 GiB RAM, 500 GiB NVMe, and 20,000 IOPS. A 16-core
-/ 64 GiB / 1 TiB machine is comfortable.
-
-## Gotchas
-
-- **Empty static DB volume**: CloudNativePG skips `initdb` on an existing but
-  uninitialized `cardano-db` volume, and the PostgreSQL container fails on
-  `pgdata`. Clone the initialized `cardano-db-1` volume instead of creating it
-  empty. See [RUNBOOK.md](./RUNBOOK.md#static-volumes).
+- DB Sync replays from genesis; Mithril would shorten rebuilds.
+- DB Sync has no native metrics endpoint, so it is not alerted.
+- One Longhorn replica, no HA; images are amd64-only.
+- Section 5 uses Pulumi rather than Terraform; no GitHub Actions workflow is
+  committed.
+- Production hardening: external secrets, encrypted disks, non-root containers,
+  backups, and HA. See [SECURITY.md](./SECURITY.md).
