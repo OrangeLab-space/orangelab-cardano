@@ -8,6 +8,9 @@ import {
 import * as pulumi from '@pulumi/pulumi';
 import assert from 'assert';
 
+const NODE_METRICS_PORT = 12798;
+const METRICS_PORT = 12799;
+
 /**
  * Cardano relay node with cardano-db-sync and PostgreSQL.
  *
@@ -48,17 +51,38 @@ export class Cardano extends pulumi.ComponentResource {
             env: { NETWORK: network },
             image: config.require(this.name, 'image'),
             initContainers: [this.dbWaitContainer],
-            ports: [{ name: 'p2p', port: 3001, protocol: 'tcp', private: true }],
+            ports: [
+                { name: 'p2p', port: 3001, protocol: 'tcp', private: true },
+                { name: 'metrics', port: METRICS_PORT, protocol: 'tcp', private: true },
+            ],
             resources: {
                 requests: { cpu: '1', memory: '6Gi' },
                 limits: { cpu: '4', memory: '12Gi' },
             },
-            sidecars: [this.createDbSyncSidecar(network)],
+            sidecars: [this.createDbSyncSidecar(network), this.createMetricsSidecar()],
             volumeMounts: [
                 { mountPath: '/data' },
                 { name: 'ipc', mountPath: '/ipc' },
             ],
         });
+    }
+
+    private createMetricsSidecar(): SidecarSpec {
+        return {
+            name: 'metrics-proxy',
+            // cardano-node binds Prometheus to 127.0.0.1; republish it on the pod
+            // network so the Service and ServiceMonitor can scrape it.
+            image: 'alpine/socat:1.8.0.1',
+            command: ['socat'],
+            commandArgs: [
+                `TCP-LISTEN:${METRICS_PORT},fork,reuseaddr`,
+                `TCP:127.0.0.1:${NODE_METRICS_PORT}`,
+            ],
+            resources: {
+                requests: { cpu: '10m', memory: '16Mi' },
+                limits: { cpu: '100m', memory: '32Mi' },
+            },
+        };
     }
 
     private createDbSyncSidecar(network: string): SidecarSpec {

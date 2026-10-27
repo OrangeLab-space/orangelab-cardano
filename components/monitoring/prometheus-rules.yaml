@@ -1,0 +1,72 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+    name: cardano-midnight-alerts
+    namespace: cardano
+    labels:
+        app.kubernetes.io/name: cardano
+        app.kubernetes.io/part-of: orangelab-cardano
+spec:
+    groups:
+        - name: cardano-midnight.rules
+          rules:
+              - alert: CardanoTipStalled
+                expr: |
+                    max_over_time(cardano_node_metrics_blockNum_int[10m])
+                      - min_over_time(cardano_node_metrics_blockNum_int[10m]) == 0
+                for: 5m
+                labels:
+                    severity: critical
+                    component: cardano
+                annotations:
+                    summary: Cardano node tip has not advanced
+                    description: >-
+                        Cardano block height has not changed for at least 15 minutes.
+                        Check cardano-node logs, peer connectivity, disk pressure, and
+                        DB Sync before restarting anything.
+                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/components/monitoring/README.md#cardano-tip-stalled
+
+              - alert: MidnightBlockStalled
+                expr: |
+                    max_over_time(substrate_block_height{status="best"}[10m])
+                      - min_over_time(substrate_block_height{status="best"}[10m]) == 0
+                for: 5m
+                labels:
+                    severity: critical
+                    component: midnight-node
+                annotations:
+                    summary: Midnight node best block has not advanced
+                    description: >-
+                        The Midnight node has not imported a block for at least 15
+                        minutes. Check the database connection, RPC, peer count, and
+                        node logs before restarting.
+                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/components/monitoring/README.md#midnight-block-stalled
+
+              - alert: MidnightPeersLow
+                expr: max(substrate_sub_libp2p_peers_count) < 3
+                for: 10m
+                labels:
+                    severity: warning
+                    component: midnight-node
+                annotations:
+                    summary: Midnight node peer count is below 3
+                    description: >-
+                        The node has fewer than three peers. Check bootnodes, network
+                        reachability, and firewall rules; sync will stall if peers
+                        reach zero.
+                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/components/monitoring/README.md#midnight-peers-low
+
+              - alert: NodeContainerRestarting
+                expr: |
+                    increase(kube_pod_container_status_restarts_total{namespace=~"cardano|midnight-node"}[15m]) > 0
+                for: 1m
+                labels:
+                    severity: warning
+                    component: node
+                annotations:
+                    summary: A Cardano or Midnight container restarted
+                    description: >-
+                        A container restarted in the last 15 minutes. Inspect the
+                        previous logs and exit code for OOM or configuration errors.
+                        Repeated restarts should be treated as critical.
+                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/components/monitoring/README.md#container-restarting

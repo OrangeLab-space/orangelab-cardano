@@ -3,6 +3,7 @@ import assert from 'assert';
 import { Cardano } from './components/cardano/cardano';
 import { MidnightIndexer } from './components/midnight-indexer/midnight-indexer';
 import { MidnightNode } from './components/midnight-node/midnight-node';
+import { Monitoring } from './components/monitoring/monitoring';
 
 const cardano = new Cardano('cardano');
 const midnightNode = config.isEnabled('midnight-node')
@@ -21,6 +22,8 @@ const midnightIndexer =
     indexerEnabled && midnightNode
         ? new MidnightIndexer('midnight-indexer', { node: midnightNode })
         : undefined;
+
+new Monitoring('monitoring', { cardano, midnightNode });
 
 export const endpoints = mergeEndpointExports(cardano, midnightNode, midnightIndexer);
 

@@ -7,6 +7,8 @@ import {
 import * as pulumi from '@pulumi/pulumi';
 import assert from 'assert';
 
+const METRICS_PORT = 9615;
+
 export interface MidnightNodeArgs {
     db: DatabaseConfig;
     /** Init container from the Cardano component that waits for its database. */
@@ -74,6 +76,7 @@ export class MidnightNode extends pulumi.ComponentResource {
             ports: [
                 { name: 'http', port: 9944, protocol: 'tcp', private: true },
                 { name: 'p2p', port: 30333, protocol: 'tcp', private: true },
+                { name: 'metrics', port: METRICS_PORT, protocol: 'tcp', private: true },
             ],
             // Midnight lists 16 GB RAM for a node. At 8 GB the kernel reclaims
             // the ledger_storage page cache, and re-reading it from Longhorn
@@ -108,6 +111,11 @@ export class MidnightNode extends pulumi.ComponentResource {
             // allow all origins rather than proxying every consumer.
             '--rpc-cors',
             'all',
+            // The exporter defaults to 127.0.0.1; bind it to the pod network so
+            // the ServiceMonitor can scrape it.
+            '--prometheus-external',
+            '--prometheus-port',
+            METRICS_PORT.toString(),
         ];
         for (const bootnode of config.requireCommaSeparated(this.name, 'bootnodes')) {
             args.push('--bootnodes', bootnode);

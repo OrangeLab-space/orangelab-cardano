@@ -10,8 +10,9 @@ config:
     # Required shared defaults (duplicated from root Pulumi.yaml)
     # orangelab:routingProvider: tailscale | traefik
     # orangelab:coreStackRef: <organization/project/stack>
-    prometheus:enabled: false
-    prometheus:enableComponentMonitoring: false
+    # Requires Prometheus Operator and Grafana from the core stack.
+    prometheus:enabled: true
+    prometheus:enableComponentMonitoring: true
     cloudnative-pg:enabled: true
     mariadb-operator:enabled: false
     # longhorn:backupAllVolumes: false # read from the core stack by default

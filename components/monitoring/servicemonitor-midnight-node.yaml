@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+    name: midnight-node
+    namespace: midnight-node
+    labels:
+        app.kubernetes.io/name: midnight-node
+        app.kubernetes.io/part-of: orangelab-cardano
+spec:
+    namespaceSelector:
+        matchNames:
+            - midnight-node
+    selector:
+        matchLabels:
+            app.kubernetes.io/name: midnight-node
+    endpoints:
+        - port: metrics
+          path: /metrics
+          interval: 30s
+          scrapeTimeout: 10s

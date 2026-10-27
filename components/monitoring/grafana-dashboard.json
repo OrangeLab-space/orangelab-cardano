@@ -1,0 +1,309 @@
+{
+    "annotations": { "list": [] },
+    "editable": true,
+    "graphTooltip": 1,
+    "links": [],
+    "panels": [
+        {
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "fieldConfig": {
+                "defaults": { "decimals": 0, "unit": "none" },
+                "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 6, "x": 0, "y": 0 },
+            "id": 1,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "max(cardano_node_metrics_blockNum_int)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Cardano tip",
+            "type": "stat"
+        },
+        {
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "fieldConfig": {
+                "defaults": { "decimals": 0, "unit": "none" },
+                "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 6, "x": 6, "y": 0 },
+            "id": 2,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "max(substrate_block_height{status=\"best\"})",
+                    "refId": "A"
+                }
+            ],
+            "title": "Midnight best block",
+            "type": "stat"
+        },
+        {
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "fieldConfig": {
+                "defaults": { "decimals": 0, "unit": "none" },
+                "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 0 },
+            "id": 3,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "max(substrate_block_height{status=\"finalized\"})",
+                    "refId": "A"
+                }
+            ],
+            "title": "Midnight finalized block",
+            "type": "stat"
+        },
+        {
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "fieldConfig": {
+                "defaults": { "decimals": 0, "unit": "none" },
+                "overrides": []
+            },
+            "gridPos": { "h": 5, "w": 6, "x": 18, "y": 0 },
+            "id": 4,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "max(substrate_sub_libp2p_peers_count)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Midnight peers",
+            "type": "stat"
+        },
+        {
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
+            "id": 5,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            },
+            "targets": [
+                {
+                    "expr": "deriv(cardano_node_metrics_blockNum_int[5m])",
+                    "legendFormat": "Cardano blocks/s",
+                    "refId": "A"
+                }
+            ],
+            "title": "Cardano block rate",
+            "type": "timeseries"
+        },
+        {
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+            "id": 6,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            },
+            "targets": [
+                {
+                    "expr": "deriv(substrate_block_height{status=\"best\"}[5m])",
+                    "legendFormat": "Midnight blocks/s",
+                    "refId": "A"
+                }
+            ],
+            "title": "Midnight block rate",
+            "type": "timeseries"
+        },
+        {
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "bars",
+                        "fillOpacity": 30,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 13 },
+            "id": 7,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            },
+            "targets": [
+                {
+                    "expr": "increase(kube_pod_container_status_restarts_total{namespace=~\"cardano|midnight-node\"}[15m])",
+                    "legendFormat": "{{namespace}}/{{pod}}/{{container}}",
+                    "refId": "A"
+                }
+            ],
+            "title": "Container restarts (15m)",
+            "type": "timeseries"
+        },
+        {
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "bytes"
+                },
+                "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 13 },
+            "id": 8,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            },
+            "targets": [
+                {
+                    "expr": "container_memory_rss{namespace=~\"cardano|midnight-node\",container!=\"POD\"}",
+                    "legendFormat": "{{namespace}}/{{pod}}/{{container}}",
+                    "refId": "A"
+                }
+            ],
+            "title": "Container RSS",
+            "type": "timeseries"
+        },
+        {
+            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": { "h": 8, "w": 24, "x": 0, "y": 21 },
+            "id": 9,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": { "mode": "multi", "sort": "desc" }
+            },
+            "targets": [
+                {
+                    "expr": "rate(container_cpu_usage_seconds_total{namespace=~\"cardano|midnight-node\",container!=\"POD\"}[5m])",
+                    "legendFormat": "{{namespace}}/{{pod}}/{{container}}",
+                    "refId": "A"
+                }
+            ],
+            "title": "Container CPU",
+            "type": "timeseries"
+        }
+    ],
+    "refresh": "30s",
+    "schemaVersion": 39,
+    "tags": ["orangelab", "cardano", "midnight"],
+    "templating": { "list": [] },
+    "time": { "from": "now-6h", "to": "now" },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "Cardano + Midnight",
+    "uid": "cardano-midnight",
+    "version": 1
+}
