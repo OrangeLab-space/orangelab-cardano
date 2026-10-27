@@ -37,7 +37,7 @@ The `cardano` volume holds both `/data/db` (node) and `/var/lib/cexplorer`
 node's default disk. Use Longhorn node scheduling to exclude it.
 
 For named volumes that survive `pulumi destroy`, see
-[static volumes](../../RUNBOOK.md#static-volumes). Do not create `cardano-db`
+[Longhorn storage](../../docs/longhorn.md). Do not create `cardano-db`
 empty: clone the initialized `cardano-db-1` volume.
 
 ## Deployment

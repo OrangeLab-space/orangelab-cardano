@@ -13,9 +13,11 @@ The Pulumi stack is `lab-cardano`. Run Pulumi from the repository root.
 
 Read [`README.md`](./README.md) for the stack layout,
 [`RUNBOOK.md`](./RUNBOOK.md) for the operational walkthrough,
+[`docs/longhorn.md`](./docs/longhorn.md) for storage,
+[`docs/validator.md`](./docs/validator.md) for validator mode,
 [`SECURITY.md`](./SECURITY.md) for key management and incident response, and
 [`evidence/README.md`](./evidence/README.md) for evidence capture. The runbook is
-the source of truth for deployment, static volumes, and shutdown.
+the source of truth for deployment and shutdown.
 
 ## External Stack Boundary
 
@@ -100,8 +102,8 @@ the source of truth for deployment, static volumes, and shutdown.
   Longhorn volumes directly.
 - Never create `cardano-db` as an empty static volume. CloudNativePG skips
   `initdb`, and PostgreSQL fails on `pgdata`. Clone the initialized
-  `cardano-db-1` volume instead. The full clone/redeploy workflow is in the
-  runbook’s “Static volumes” section.
+  `cardano-db-1` volume instead. The full clone/redeploy workflow is in
+  [`docs/longhorn.md`](./docs/longhorn.md).
 - `cardano:db/password` is restore-critical. Keep it stable across database
   restores. Do not print it; have the user read it from stack output in their own
   terminal.

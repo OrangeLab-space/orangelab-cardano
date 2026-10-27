@@ -41,8 +41,9 @@ pulumi config set midnight-node:enabled true
 pulumi up
 ```
 
-Full sequence, static volumes, validator mode, and troubleshooting:
-[RUNBOOK.md](./RUNBOOK.md).
+Full deployment sequence and troubleshooting: [RUNBOOK.md](./RUNBOOK.md).
+Storage details: [docs/longhorn.md](./docs/longhorn.md). Validator mode:
+[docs/validator.md](./docs/validator.md).
 
 ## Storage
 
@@ -56,7 +57,7 @@ The default is dynamic Longhorn (`longhorn-large`, one replica):
 | `midnight-indexer` | 250Gi |
 
 `pulumi destroy` deletes dynamic volumes. For named volumes that survive
-destroy, see [static volumes](./RUNBOOK.md#static-volumes).
+destroy, see [Longhorn storage](./docs/longhorn.md).
 
 ## Monitoring (Section 2)
 

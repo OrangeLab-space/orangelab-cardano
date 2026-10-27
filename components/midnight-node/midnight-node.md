@@ -95,7 +95,7 @@ up. Use `/health/readiness` manually for the caught-up signal.
 `midnight-node:reservedNodes` list. It also requires session keys in the node
 keystore and the Foundation-provided WireGuard overlay. The overlay addresses,
 peer IDs, and reserved peer list are not public; see
-[RUNBOOK.md](../../RUNBOOK.md#fno-validator-mode).
+[docs/validator.md](../../docs/validator.md).
 
 ## Gotchas
 
