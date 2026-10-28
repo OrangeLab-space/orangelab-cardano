@@ -24,13 +24,12 @@ config:
     cardano:storage/backupEnabled: false
     cardano:db-sync/image: ghcr.io/intersectmbo/cardano-db-sync:13.7.1.0
     cardano:db/storageSize: 50Gi
-    # Keep the DB cluster while cardano:storageOnly stops the cardano deployment
-    # cardano:db/enabled: true
     # Persist the DB password before restore/recreate (restore-critical).
     # Set it before the first deploy, or save the generated value afterward.
     # cardano:db/password:
     #     secure: <password>
-    # Set after cloning the initialized cardano-db-1 volume; do not create it empty
+    # Advanced: attach a named volume instead of a dynamic one.
+    # See docs/longhorn.md before setting this.
     # cardano:db/fromVolume: cardano-db
     cardano:postgres/storageClass: longhorn-large
     cardano:db/image: ghcr.io/cloudnative-pg/postgresql:17.11-system-trixie

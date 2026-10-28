@@ -18,3 +18,7 @@ spec:
           path: /metrics
           interval: 30s
           scrapeTimeout: 10s
+        - port: sync-metrics
+          path: /metrics
+          interval: 30s
+          scrapeTimeout: 10s

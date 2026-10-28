@@ -2,18 +2,19 @@
 
 Prometheus and Grafana monitoring for the Cardano + Midnight stack. The stack
 uses the Prometheus Operator and Grafana from the OrangeLab core stack.
-`pulumi up` installs the ServiceMonitors, alert rules, and dashboard when
-`prometheus:enabled` and `prometheus:enableComponentMonitoring` are true (the
-defaults in [`Pulumi.yaml`](../../Pulumi.yaml)).
+`pulumi up` installs the ServiceMonitors, PodMonitors, alert rules, and dashboard
+when `prometheus:enabled` and `prometheus:enableComponentMonitoring` are true
+(the defaults in [`Pulumi.yaml`](../../Pulumi.yaml)).
 
 ## Files
 
-| File                                | Purpose                                              |
-| ----------------------------------- | ---------------------------------------------------- |
-| `servicemonitor-cardano.yaml`       | Scrapes the `cardano` Service metrics port           |
-| `servicemonitor-midnight-node.yaml` | Scrapes the `midnight-node` Service metrics port     |
-| `prometheus-rules.yaml`             | Cardano/Midnight alert definitions                   |
-| `grafana-dashboard.json`            | Grafana dashboard (Pulumi deploys it to `OrangeLab`) |
+| File                                | Purpose                                          |
+| ----------------------------------- | ------------------------------------------------ |
+| `servicemonitor-cardano.yaml`       | Scrapes the Cardano node and sync exporter ports |
+| `podmonitor-cardano-db-sync.yaml`   | Scrapes DB Sync metrics on port 8080             |
+| `servicemonitor-midnight-node.yaml` | Scrapes the `midnight-node` Service metrics port |
+| `prometheus-rules.yaml`             | Cardano/Midnight alert definitions               |
+| `grafana-dashboard.json`            | Cardano + DB Sync + Midnight dashboard           |
 
 The YAML files are consumed directly by the Pulumi `Monitoring` component, so the
 committed manifests are the deployed manifests.
@@ -23,13 +24,18 @@ committed manifests are the deployed manifests.
 - **Cardano:** `cardano-node` binds Prometheus to `127.0.0.1:12798`. A `socat`
   sidecar republishes it on pod port `12799`, exposed by the `cardano` Service as
   `metrics`.
+- **Cardano sync:** a small sidecar runs `cardano-cli query tip` every 15 seconds
+  and serves `cardano_node_sync_progress_percent` on pod port `12800`, exposed
+  as `sync-metrics`. It also exports the tip slot, block, and epoch. This is the
+  network-relative progress from the node itself; `blockReplayProgress` is only
+  local ledger replay.
+- **DB Sync:** exposes `cardano_db_sync_*` metrics on port `8080`. A PodMonitor
+  scrapes the pod directly, so the dashboard can show block height, lag, and
+  queue depth without a PostgreSQL exporter.
 - **Midnight:** the node runs with `--prometheus-external` and serves `/metrics`
   on port `9615`. The `midnight-node` Service exposes it as `metrics`.
 - **PostgreSQL:** CloudNativePG creates its own PodMonitor when component
   monitoring is enabled.
-- **DB Sync:** no native Prometheus endpoint. Use
-  [`scripts/db-sync-progress.sh`](../../scripts/db-sync-progress.sh) for block
-  height, or add a PostgreSQL exporter if DB Sync lag must page.
 
 Metrics ports are cluster-only.
 
@@ -45,8 +51,9 @@ bursts are normal and Midnight memory is mostly reclaimable page cache.
 | `MidnightPeersLow`        | Peer count below 3 for 10 minutes            | Low peers risk a sync stall and isolate the node.                      | Check bootnodes, network reachability, and firewall rules.                            |
 | `NodeContainerRestarting` | Any container restart in the last 15 minutes | Restarts can indicate OOM, bad configuration, or a failing dependency. | Inspect previous logs and exit code. Repeated restarts are critical.                  |
 
-`CardanoTipStalled` compares max/min height over 10 minutes and fires after 5
-more minutes with no change, so the node must be static for 15 minutes.
+`CardanoTipStalled` compares max/min height across all pods over 10 minutes and
+fires after 5 more minutes with no change, so the node must be static for 15
+minutes. Aggregating avoids false positives from a terminated pod's stale series.
 `MidnightBlockStalled` uses the same window on `substrate_block_height{status="best"}`.
 `MidnightPeersLow` tolerates brief churn and fires only after 10 minutes below
 three peers. `NodeContainerRestarting` covers both namespaces; a restart during
@@ -55,36 +62,51 @@ a deployment is expected.
 This is a **full node**, not a validator. Block-production and attestation alerts
 are out of scope until validator mode is enabled.
 
+## Fresh sync
+
+During catch-up, Alertmanager may show `NodeMemoryMajorPagesFaults` and
+`NodeDiskIOSaturation`; both are expected while DB Sync and Midnight replay.
+`CardanoTipStalled` must stay inactive while the Cardano tip advances. If
+Midnight is enabled before DB Sync catches up, expect `NodeContainerRestarting`,
+`MidnightBlockStalled`, and `MidnightPeersLow`; it exits with
+`relation "ma_tx_out" does not exist` until the schema exists.
+
+```sh
+kubectl -n prometheus port-forward svc/prometheus-alertmanager 9093:9093
+curl -s http://localhost:9093/api/v2/alerts \
+  | jq -r '.[] | [.labels.alertname, .labels.severity, .status.state] | @tsv'
+```
+
+## Dashboard sections
+
+The dashboard is grouped into **Cardano**, **DB Sync**, **Midnight**, and
+**Resources**. The Cardano row shows tip, epoch, **sync progress**, and an
+**ETA** derived from the last 10 minutes of progress. The DB Sync row shows
+database health, **block-height lag** against the node, and the indexed block
+height next to the node tip.
+
+The ETA is a projection from recent progress, not a guarantee. Later epochs carry
+more transactions, so replay slows down. For an authoritative block-height pair,
+use [`scripts/db-sync-progress.sh`](../../scripts/db-sync-progress.sh) and
+[`scripts/cardano-cli.sh query tip`](../../scripts/cardano-cli.sh).
+
+For a project screenshot, use a time range that covers the whole sync and hide
+node names or IPs before committing the image.
+
 ## Deploy
 
-Pulumi-managed (normal path):
+Deploy through Pulumi:
 
 ```sh
 pulumi up
 ```
 
-Manual apply only if Pulumi does not manage these resources. Do not mix paths.
-
-```sh
-kubectl apply -f components/monitoring/servicemonitor-cardano.yaml
-kubectl apply -f components/monitoring/servicemonitor-midnight-node.yaml
-kubectl apply -f components/monitoring/prometheus-rules.yaml
-
-kubectl create configmap cardano-midnight-dashboard -n cardano \
-  --from-file=cardano-midnight.json=components/monitoring/grafana-dashboard.json \
-  --dry-run=client -o yaml | kubectl apply -f -
-kubectl label configmap cardano-midnight-dashboard -n cardano \
-  grafana_dashboard=1 --overwrite
-kubectl annotate configmap cardano-midnight-dashboard -n cardano \
-  k8s-sidecar-target-folder=OrangeLab --overwrite
-```
-
-The Grafana sidecar watches all namespaces.
+The Grafana sidecar watches all namespaces and picks up the dashboard ConfigMap.
 
 ## Verify
 
 ```sh
-kubectl get servicemonitors -A | grep -E 'cardano|midnight-node'
+kubectl get servicemonitors,podmonitors -A | grep -E 'cardano|midnight-node'
 kubectl get prometheusrules -A | grep cardano
 
 kubectl -n prometheus port-forward svc/prometheus-prometheus 9090:9090
@@ -100,7 +122,8 @@ curl -s http://localhost:9090/api/v1/rules |
   jq -r '.data.groups[] | select(.name == "cardano-midnight.rules") | .rules[] | [.name, .state] | @tsv'
 
 # Current values
-curl -s 'http://localhost:9090/api/v1/query?query=cardano_node_metrics_blockNum_int' | jq
+curl -s 'http://localhost:9090/api/v1/query?query=cardano_node_sync_progress_percent' | jq
+curl -s 'http://localhost:9090/api/v1/query?query=cardano_db_sync_db_block_height' | jq
 curl -s 'http://localhost:9090/api/v1/query?query=substrate_block_height%7Bstatus%3D%22best%22%7D' | jq
 ```
 
@@ -116,7 +139,7 @@ python3 -c 'import yaml,sys; print(yaml.safe_dump(yaml.safe_load(sys.stdin)["spe
 
 The dashboard is titled **Cardano + Midnight** (UID `cardano-midnight`). The
 library requests the `OrangeLab` folder; the sidecar may place it in the default
-folder. Direct URL: `https://grafana.orangelab.space/d/cardano-midnight`.
+folder. Direct URL: `https://grafana.<domain>/d/cardano-midnight`.
 
 If it does not appear:
 
@@ -127,6 +150,7 @@ kubectl -n prometheus logs deploy/prometheus-43506c55-grafana \
 
 ## Limitations
 
-- DB Sync lag is not alerted because it has no native metrics endpoint.
+- DB Sync lag is not alerted because it has no native metrics endpoint. The
+  overview dashboard shows a write-rate proxy; use the script for block height.
 - CPU and memory are dashboard signals, not paging alerts.
 - Alerts assume the core stack's Prometheus Operator and Grafana are present.

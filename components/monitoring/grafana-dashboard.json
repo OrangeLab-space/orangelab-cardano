@@ -1,16 +1,42 @@
 {
-    "annotations": { "list": [] },
+    "annotations": {
+        "list": []
+    },
     "editable": true,
     "graphTooltip": 1,
     "links": [],
     "panels": [
         {
-            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 100,
+            "panels": [],
+            "title": "Cardano",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "fieldConfig": {
-                "defaults": { "decimals": 0, "unit": "none" },
+                "defaults": {
+                    "decimals": 0,
+                    "unit": "none"
+                },
                 "overrides": []
             },
-            "gridPos": { "h": 5, "w": 6, "x": 0, "y": 0 },
+            "gridPos": {
+                "h": 5,
+                "w": 8,
+                "x": 0,
+                "y": 1
+            },
             "id": 1,
             "options": {
                 "colorMode": "value",
@@ -34,12 +60,665 @@
             "type": "stat"
         },
         {
-            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "fieldConfig": {
-                "defaults": { "decimals": 0, "unit": "none" },
+                "defaults": {
+                    "decimals": 0,
+                    "unit": "none",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "green",
+                                "value": 3
+                            }
+                        ]
+                    }
+                },
                 "overrides": []
             },
-            "gridPos": { "h": 5, "w": 6, "x": 6, "y": 0 },
+            "gridPos": {
+                "h": 5,
+                "w": 8,
+                "x": 8,
+                "y": 1
+            },
+            "id": 10,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "max(cardano_node_metrics_connectionManager_outboundConns_int)",
+                    "legendFormat": "peers",
+                    "refId": "A"
+                }
+            ],
+            "title": "Cardano peers",
+            "type": "stat",
+            "description": "Outbound Cardano P2P connections. Fewer than three peers risks a sync stall."
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "Current Cardano epoch. It advances as the node syncs; compare with the network epoch.",
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 0,
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 8,
+                "x": 16,
+                "y": 1
+            },
+            "id": 17,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "max(cardano_node_metrics_epoch_int)",
+                    "legendFormat": "epoch",
+                    "refId": "A"
+                }
+            ],
+            "title": "Cardano epoch",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "Network-relative sync progress from cardano-cli query tip. 100% means the node has reached the network tip.",
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 2,
+                    "max": 100,
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 90
+                            },
+                            {
+                                "color": "green",
+                                "value": 99.9
+                            }
+                        ]
+                    },
+                    "unit": "percent"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 12,
+                "x": 0,
+                "y": 6
+            },
+            "id": 22,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "max(cardano_node_sync_progress_percent)",
+                    "legendFormat": "sync progress",
+                    "refId": "A"
+                }
+            ],
+            "title": "Cardano sync progress",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "Estimated time to reach the network tip from the last 10 minutes of sync progress. Later epochs are heavier, so treat it as a projection.",
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 0,
+                    "unit": "s",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "text",
+                                "value": null
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 12,
+                "x": 12,
+                "y": 6
+            },
+            "id": 23,
+            "options": {
+                "colorMode": "none",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "(100 - max(cardano_node_sync_progress_percent)) / clamp_min(max(deriv(cardano_node_sync_progress_percent[10m])), 0.000001)",
+                    "legendFormat": "ETA",
+                    "refId": "A"
+                }
+            ],
+            "title": "Cardano sync ETA",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 11
+            },
+            "id": 5,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "expr": "max(deriv(cardano_node_metrics_blockNum_int[5m]))",
+                    "legendFormat": "Cardano blocks/s",
+                    "refId": "A"
+                }
+            ],
+            "title": "Cardano block rate",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "s"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 11
+            },
+            "id": 14,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "expr": "max(cardano_node_metrics_blockfetchclient_blockdelay_real)",
+                    "legendFormat": "seconds",
+                    "refId": "A"
+                }
+            ],
+            "title": "Cardano block fetch delay",
+            "type": "timeseries",
+            "description": "Average delay fetching blocks from peers. Rising values point to network or peer problems."
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 19
+            },
+            "id": 101,
+            "panels": [],
+            "title": "DB Sync",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 1,
+                    "unit": "bytes"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 6,
+                "x": 0,
+                "y": 20
+            },
+            "id": 11,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "max(cnpg_pg_database_size_bytes{namespace=\"cardano\",datname=\"cardano\"})",
+                    "legendFormat": "size",
+                    "refId": "A"
+                }
+            ],
+            "title": "Postgres database size",
+            "type": "stat",
+            "description": "Size of the Cardano DB Sync database."
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 2,
+                    "unit": "percent",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 95
+                            },
+                            {
+                                "color": "green",
+                                "value": 99
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 6,
+                "x": 6,
+                "y": 20
+            },
+            "id": 12,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "100 * sum(rate(cnpg_pg_stat_database_blks_hit{namespace=\"cardano\",datname=\"cardano\"}[5m])) / (sum(rate(cnpg_pg_stat_database_blks_hit{namespace=\"cardano\",datname=\"cardano\"}[5m])) + sum(rate(cnpg_pg_stat_database_blks_read{namespace=\"cardano\",datname=\"cardano\"}[5m])))",
+                    "legendFormat": "cache hit",
+                    "refId": "A"
+                }
+            ],
+            "title": "Postgres cache hit ratio",
+            "type": "stat",
+            "description": "Share of PostgreSQL block reads served from cache. A low ratio points to memory pressure."
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 0,
+                    "unit": "none",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 1
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 6,
+                "x": 12,
+                "y": 20
+            },
+            "id": 13,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "max(cnpg_backends_waiting_total{namespace=\"cardano\"})",
+                    "legendFormat": "waiting",
+                    "refId": "A"
+                }
+            ],
+            "title": "Postgres waiting backends",
+            "type": "stat",
+            "description": "Backends waiting on locks. Sustained non-zero values indicate contention."
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "Blocks between the local Cardano node tip and the last block written by DB Sync. A small, stable lag means DB Sync is keeping up.",
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 0,
+                    "unit": "none",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 1000
+                            },
+                            {
+                                "color": "red",
+                                "value": 10000
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 6,
+                "x": 18,
+                "y": 20
+            },
+            "id": 24,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "clamp_min(max(cardano_db_sync_node_block_height) - max(cardano_db_sync_db_block_height), 0)",
+                    "legendFormat": "blocks behind",
+                    "refId": "A"
+                }
+            ],
+            "title": "DB Sync lag",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "DB Sync's last indexed block compared with the local Cardano node tip.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 25
+            },
+            "id": 25,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "expr": "max(cardano_db_sync_db_block_height)",
+                    "legendFormat": "DB Sync block",
+                    "refId": "A"
+                },
+                {
+                    "expr": "max(cardano_db_sync_node_block_height)",
+                    "legendFormat": "node tip",
+                    "refId": "B"
+                }
+            ],
+            "title": "DB Sync block height",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "ops"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 25
+            },
+            "id": 15,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "expr": "sum(rate(cnpg_pg_stat_database_tup_inserted{namespace=\"cardano\",datname=\"cardano\"}[5m]))",
+                    "legendFormat": "rows/s",
+                    "refId": "A"
+                }
+            ],
+            "title": "DB Sync write rate",
+            "type": "timeseries",
+            "description": "Rows inserted per second. Compare with DB Sync lag and block height to see whether writes keep up with the node."
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 33
+            },
+            "id": 102,
+            "panels": [],
+            "title": "Midnight",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 0,
+                    "unit": "none"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 4,
+                "x": 0,
+                "y": 34
+            },
             "id": 2,
             "options": {
                 "colorMode": "value",
@@ -63,12 +742,23 @@
             "type": "stat"
         },
         {
-            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "fieldConfig": {
-                "defaults": { "decimals": 0, "unit": "none" },
+                "defaults": {
+                    "decimals": 0,
+                    "unit": "none"
+                },
                 "overrides": []
             },
-            "gridPos": { "h": 5, "w": 6, "x": 12, "y": 0 },
+            "gridPos": {
+                "h": 5,
+                "w": 4,
+                "x": 4,
+                "y": 34
+            },
             "id": 3,
             "options": {
                 "colorMode": "value",
@@ -92,12 +782,23 @@
             "type": "stat"
         },
         {
-            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "fieldConfig": {
-                "defaults": { "decimals": 0, "unit": "none" },
+                "defaults": {
+                    "decimals": 0,
+                    "unit": "none"
+                },
                 "overrides": []
             },
-            "gridPos": { "h": 5, "w": 6, "x": 18, "y": 0 },
+            "gridPos": {
+                "h": 5,
+                "w": 4,
+                "x": 8,
+                "y": 34
+            },
             "id": 4,
             "options": {
                 "colorMode": "value",
@@ -121,42 +822,166 @@
             "type": "stat"
         },
         {
-            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "fieldConfig": {
                 "defaults": {
-                    "custom": {
-                        "drawStyle": "line",
-                        "fillOpacity": 10,
-                        "lineInterpolation": "linear",
-                        "lineWidth": 1,
-                        "showPoints": "never"
-                    },
+                    "decimals": 1,
+                    "max": 100,
+                    "min": 0,
+                    "unit": "percent",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 25
+                            },
+                            {
+                                "color": "yellow",
+                                "value": 75
+                            },
+                            {
+                                "color": "green",
+                                "value": 95
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 5,
+                "w": 4,
+                "x": 12,
+                "y": 34
+            },
+            "id": 16,
+            "options": {
+                "colorMode": "background",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "100 * max(substrate_block_height{status=\"best\"}) / clamp_min(max(substrate_block_height{status=\"sync_target\"}), 1)",
+                    "legendFormat": "sync progress",
+                    "refId": "A"
+                }
+            ],
+            "title": "Midnight sync progress",
+            "type": "stat",
+            "description": "Midnight best block as a percentage of the network sync target."
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "Blocks still to import before the node reaches the sync target.",
+            "fieldConfig": {
+                "defaults": {
+                    "decimals": 0,
                     "unit": "none"
                 },
                 "overrides": []
             },
-            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 5 },
-            "id": 5,
+            "gridPos": {
+                "h": 5,
+                "w": 8,
+                "x": 16,
+                "y": 34
+            },
+            "id": 18,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": ["lastNotNull"],
+                    "fields": "",
+                    "values": false
+                },
+                "textMode": "auto"
+            },
+            "targets": [
+                {
+                    "expr": "clamp_min(max(substrate_block_height{status=\"sync_target\"}) - max(substrate_block_height{status=\"best\"}), 0)",
+                    "legendFormat": "remaining",
+                    "refId": "A"
+                }
+            ],
+            "title": "Midnight blocks remaining",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "Midnight catch-up curve. A flat line means the node is not importing blocks.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 20,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 2,
+                        "showPoints": "never"
+                    },
+                    "max": 100,
+                    "min": 0,
+                    "unit": "percent"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 39
+            },
+            "id": 19,
             "options": {
                 "legend": {
                     "displayMode": "list",
                     "placement": "bottom",
                     "showLegend": true
                 },
-                "tooltip": { "mode": "multi", "sort": "desc" }
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
             },
             "targets": [
                 {
-                    "expr": "deriv(cardano_node_metrics_blockNum_int[5m])",
-                    "legendFormat": "Cardano blocks/s",
+                    "expr": "100 * max(substrate_block_height{status=\"best\"}) / clamp_min(max(substrate_block_height{status=\"sync_target\"}), 1)",
+                    "legendFormat": "sync progress",
                     "refId": "A"
                 }
             ],
-            "title": "Cardano block rate",
+            "title": "Midnight sync progress over time",
             "type": "timeseries"
         },
         {
-            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "fieldConfig": {
                 "defaults": {
                     "custom": {
@@ -170,7 +995,12 @@
                 },
                 "overrides": []
             },
-            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 5 },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 39
+            },
             "id": 6,
             "options": {
                 "legend": {
@@ -178,11 +1008,14 @@
                     "placement": "bottom",
                     "showLegend": true
                 },
-                "tooltip": { "mode": "multi", "sort": "desc" }
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
             },
             "targets": [
                 {
-                    "expr": "deriv(substrate_block_height{status=\"best\"}[5m])",
+                    "expr": "max(deriv(substrate_block_height{status=\"best\"}[5m]))",
                     "legendFormat": "Midnight blocks/s",
                     "refId": "A"
                 }
@@ -191,42 +1024,128 @@
             "type": "timeseries"
         },
         {
-            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "Time spent verifying and importing each Midnight block.",
             "fieldConfig": {
                 "defaults": {
                     "custom": {
-                        "drawStyle": "bars",
-                        "fillOpacity": 30,
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
                         "lineInterpolation": "linear",
                         "lineWidth": 1,
                         "showPoints": "never"
                     },
-                    "unit": "none"
+                    "unit": "s"
                 },
                 "overrides": []
             },
-            "gridPos": { "h": 8, "w": 12, "x": 0, "y": 13 },
-            "id": 7,
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 47
+            },
+            "id": 20,
             "options": {
                 "legend": {
                     "displayMode": "list",
                     "placement": "bottom",
                     "showLegend": true
                 },
-                "tooltip": { "mode": "multi", "sort": "desc" }
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
             },
             "targets": [
                 {
-                    "expr": "increase(kube_pod_container_status_restarts_total{namespace=~\"cardano|midnight-node\"}[15m])",
-                    "legendFormat": "{{namespace}}/{{pod}}/{{container}}",
+                    "expr": "histogram_quantile(0.50, sum by (le) (rate(substrate_block_verification_and_import_time_bucket[5m])))",
+                    "legendFormat": "p50",
                     "refId": "A"
+                },
+                {
+                    "expr": "histogram_quantile(0.95, sum by (le) (rate(substrate_block_verification_and_import_time_bucket[5m])))",
+                    "legendFormat": "p95",
+                    "refId": "B"
                 }
             ],
-            "title": "Container restarts (15m)",
+            "title": "Midnight block import time",
             "type": "timeseries"
         },
         {
-            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "Read and write IOPS on the static Midnight Longhorn volume.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "iops"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 47
+            },
+            "id": 21,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "expr": "max(longhorn_volume_read_iops{volume=\"cardano-midnight\"})",
+                    "legendFormat": "read",
+                    "refId": "A"
+                },
+                {
+                    "expr": "max(longhorn_volume_write_iops{volume=\"cardano-midnight\"})",
+                    "legendFormat": "write",
+                    "refId": "B"
+                }
+            ],
+            "title": "Midnight volume IOPS",
+            "type": "timeseries"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 55
+            },
+            "id": 103,
+            "panels": [],
+            "title": "Resources",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "Working set is the memory Kubernetes uses for OOM decisions, grouped by Deployment. Limit lines show each container's memory limit. CNPG is covered by its own dashboard.",
             "fieldConfig": {
                 "defaults": {
                     "custom": {
@@ -238,9 +1157,34 @@
                     },
                     "unit": "bytes"
                 },
-                "overrides": []
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/ limit$/"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.lineStyle",
+                                "value": {
+                                    "dash": [10, 10],
+                                    "fill": "dash"
+                                }
+                            },
+                            {
+                                "id": "custom.fillOpacity",
+                                "value": 0
+                            }
+                        ]
+                    }
+                ]
             },
-            "gridPos": { "h": 8, "w": 12, "x": 12, "y": 13 },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 56
+            },
             "id": 8,
             "options": {
                 "legend": {
@@ -248,20 +1192,31 @@
                     "placement": "bottom",
                     "showLegend": true
                 },
-                "tooltip": { "mode": "multi", "sort": "desc" }
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
             },
             "targets": [
                 {
-                    "expr": "container_memory_rss{namespace=~\"cardano|midnight-node\",container!=\"POD\"}",
-                    "legendFormat": "{{namespace}}/{{pod}}/{{container}}",
+                    "expr": "max by (namespace, container, deployment) (container_memory_working_set_bytes{namespace=~\"cardano|midnight-node\",container!=\"\",container!=\"POD\"} * on (namespace, pod) group_left(replicaset) max by (namespace, pod, replicaset) (label_replace(kube_pod_owner{namespace=~\"cardano|midnight-node\",owner_kind=\"ReplicaSet\"}, \"replicaset\", \"$1\", \"owner_name\", \"(.+)\")) * on (namespace, replicaset) group_left(deployment) max by (namespace, replicaset, deployment) (label_replace(kube_replicaset_owner{namespace=~\"cardano|midnight-node\",owner_kind=\"Deployment\"}, \"deployment\", \"$1\", \"owner_name\", \"(.+)\")))",
+                    "legendFormat": "{{deployment}}/{{container}}",
                     "refId": "A"
+                },
+                {
+                    "expr": "max by (namespace, container, deployment) (kube_pod_container_resource_limits{namespace=~\"cardano|midnight-node\",resource=\"memory\",unit=\"byte\"} * on (namespace, pod) group_left(replicaset) max by (namespace, pod, replicaset) (label_replace(kube_pod_owner{namespace=~\"cardano|midnight-node\",owner_kind=\"ReplicaSet\"}, \"replicaset\", \"$1\", \"owner_name\", \"(.+)\")) * on (namespace, replicaset) group_left(deployment) max by (namespace, replicaset, deployment) (label_replace(kube_replicaset_owner{namespace=~\"cardano|midnight-node\",owner_kind=\"Deployment\"}, \"deployment\", \"$1\", \"owner_name\", \"(.+)\")))",
+                    "legendFormat": "{{deployment}}/{{container}} limit",
+                    "refId": "B"
                 }
             ],
-            "title": "Container RSS",
+            "title": "Deployment memory working set",
             "type": "timeseries"
         },
         {
-            "datasource": { "type": "prometheus", "uid": "prometheus" },
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
             "fieldConfig": {
                 "defaults": {
                     "custom": {
@@ -275,7 +1230,12 @@
                 },
                 "overrides": []
             },
-            "gridPos": { "h": 8, "w": 24, "x": 0, "y": 21 },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 56
+            },
             "id": 9,
             "options": {
                 "legend": {
@@ -283,24 +1243,79 @@
                     "placement": "bottom",
                     "showLegend": true
                 },
-                "tooltip": { "mode": "multi", "sort": "desc" }
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
             },
             "targets": [
                 {
-                    "expr": "rate(container_cpu_usage_seconds_total{namespace=~\"cardano|midnight-node\",container!=\"POD\"}[5m])",
-                    "legendFormat": "{{namespace}}/{{pod}}/{{container}}",
+                    "expr": "sum by (namespace, container, deployment) (rate(container_cpu_usage_seconds_total{namespace=~\"cardano|midnight-node\",container!=\"\",container!=\"POD\"}[5m]) * on (namespace, pod) group_left(replicaset) max by (namespace, pod, replicaset) (label_replace(kube_pod_owner{namespace=~\"cardano|midnight-node\",owner_kind=\"ReplicaSet\"}, \"replicaset\", \"$1\", \"owner_name\", \"(.+)\")) * on (namespace, replicaset) group_left(deployment) max by (namespace, replicaset, deployment) (label_replace(kube_replicaset_owner{namespace=~\"cardano|midnight-node\",owner_kind=\"Deployment\"}, \"deployment\", \"$1\", \"owner_name\", \"(.+)\")))",
+                    "legendFormat": "{{deployment}}/{{container}}",
                     "refId": "A"
                 }
             ],
-            "title": "Container CPU",
+            "title": "Deployment CPU",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "description": "Major page faults per second, grouped by Deployment. Spikes indicate the kernel is re-reading pages; Midnight often shows this while syncing the ledger database.",
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "fillOpacity": 10,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "showPoints": "never"
+                    },
+                    "unit": "ops"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 64
+            },
+            "id": 7,
+            "options": {
+                "legend": {
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "multi",
+                    "sort": "desc"
+                }
+            },
+            "targets": [
+                {
+                    "expr": "sum by (namespace, container, deployment) (rate(container_memory_failures_total{namespace=~\"cardano|midnight-node\",container!=\"\",container!=\"POD\",failure_type=\"pgmajfault\"}[5m]) * on (namespace, pod) group_left(replicaset) max by (namespace, pod, replicaset) (label_replace(kube_pod_owner{namespace=~\"cardano|midnight-node\",owner_kind=\"ReplicaSet\"}, \"replicaset\", \"$1\", \"owner_name\", \"(.+)\")) * on (namespace, replicaset) group_left(deployment) max by (namespace, replicaset, deployment) (label_replace(kube_replicaset_owner{namespace=~\"cardano|midnight-node\",owner_kind=\"Deployment\"}, \"deployment\", \"$1\", \"owner_name\", \"(.+)\")))",
+                    "legendFormat": "{{deployment}}/{{container}}",
+                    "refId": "A"
+                }
+            ],
+            "title": "Deployment major page faults",
             "type": "timeseries"
         }
     ],
     "refresh": "30s",
     "schemaVersion": 39,
-    "tags": ["orangelab", "cardano", "midnight"],
-    "templating": { "list": [] },
-    "time": { "from": "now-6h", "to": "now" },
+    "tags": ["orangelab", "cardano", "midnight", "sync"],
+    "templating": {
+        "list": []
+    },
+    "time": {
+        "from": "now-6h",
+        "to": "now"
+    },
     "timepicker": {},
     "timezone": "browser",
     "title": "Cardano + Midnight",

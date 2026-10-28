@@ -49,23 +49,26 @@ Storage details: [docs/longhorn.md](./docs/longhorn.md). Validator mode:
 
 ## Storage
 
-The default is dynamic Longhorn (`longhorn-large`, one replica):
+The stack uses named Longhorn volumes for app data:
 
-| Volume             | Size  |
-| ------------------ | ----- |
-| `cardano`          | 120Gi |
-| `cardano-db`       | 50Gi  |
-| `midnight-node`    | 250Gi |
-| `midnight-indexer` | 250Gi |
+| Volume                     | Size  |
+| -------------------------- | ----- |
+| `cardano`                  | 120Gi |
+| `cardano-db`               | 50Gi  |
+| `cardano-midnight`         | 250Gi |
+| `cardano-midnight-indexer` | 250Gi |
 
-`pulumi destroy` deletes dynamic volumes. For named volumes that survive
-destroy, see [Longhorn storage](./docs/longhorn.md).
+The DB starts on a dynamic volume for the first bootstrap; clone it to
+`cardano-db` after CNPG `initdb` and DB Sync schema creation. `pulumi destroy`
+keeps the named volumes. See [Longhorn storage](./docs/longhorn.md).
 
 ## Monitoring (Section 2)
 
 All monitoring assets live in [components/monitoring](./components/monitoring).
-`pulumi up` installs the ServiceMonitors, Prometheus rules, and Grafana
-dashboard.
+`pulumi up` installs the ServiceMonitors, PodMonitors, Prometheus rules, and
+Grafana dashboard. The dashboard is grouped into Cardano, DB Sync, Midnight, and
+resource sections; it shows network-relative sync progress, an ETA, and DB Sync
+block-height lag.
 
 | Alert                     | Signal                                       | Response                                                             |
 | ------------------------- | -------------------------------------------- | -------------------------------------------------------------------- |
@@ -125,7 +128,7 @@ This stack uses Pulumi, not Terraform. The Section 5 equivalents are:
 ## Assumptions
 
 - One Kubernetes cluster with the OrangeLab core stack already deployed.
-- Dynamic Longhorn storage is acceptable; there is no HA.
+- Named Longhorn storage is used; one replica, no HA.
 - The stack runs a full node. Validator keys and the WireGuard overlay are gated.
 - Preprod is the default; other networks need matching config and bootnodes.
 - Lab secrets live in Pulumi state; production uses external secret management.

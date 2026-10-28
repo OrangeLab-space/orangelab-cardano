@@ -85,6 +85,15 @@ republishes it on pod port `12799`, exposed by the `cardano` Service as
 `metrics`. The [monitoring setup](../monitoring/README.md) scrapes it through the
 `cardano` ServiceMonitor.
 
+A second sidecar runs `cardano-cli query tip` every 15 seconds and serves
+`cardano_node_sync_progress_percent` on port `12800`, exposed as
+`sync-metrics`. That is the node's network-relative `syncProgress`, not the
+local `blockReplayProgress` gauge. The same ServiceMonitor scrapes it.
+
+The pod also declares port `8080` as `db-sync-metrics` so Prometheus can
+discover the DB Sync sidecar's native metrics endpoint; the DB Sync PodMonitor
+scrapes it through the pod, not the Service.
+
 ## Verify
 
 ```sh
