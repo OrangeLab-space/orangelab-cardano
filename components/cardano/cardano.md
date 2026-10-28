@@ -82,7 +82,7 @@ in one pod and mount one `emptyDir` at both paths. DB Sync waits for the socket.
 
 `cardano-node` binds Prometheus to `127.0.0.1:12798`. A `socat` sidecar
 republishes it on pod port `12799`, exposed by the `cardano` Service as
-`metrics`. The [monitoring setup](../monitoring/README.md) scrapes it through the
+`metrics`. The [monitoring setup](../../docs/monitoring.md) scrapes it through the
 `cardano` ServiceMonitor.
 
 A second sidecar runs `cardano-cli query tip` every 15 seconds and serves

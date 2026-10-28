@@ -24,7 +24,7 @@ spec:
                         Cardano block height has not changed for at least 15 minutes.
                         Check cardano-node logs, peer connectivity, disk pressure, and
                         DB Sync before restarting anything.
-                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/components/monitoring/README.md#cardano-tip-stalled
+                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/docs/monitoring.md#alert-design
 
               - alert: MidnightBlockStalled
                 expr: |
@@ -40,7 +40,7 @@ spec:
                         The Midnight node has not imported a block for at least 15
                         minutes. Check the database connection, RPC, peer count, and
                         node logs before restarting.
-                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/components/monitoring/README.md#midnight-block-stalled
+                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/docs/monitoring.md#alert-design
 
               - alert: MidnightPeersLow
                 expr: max(substrate_sub_libp2p_peers_count) < 3
@@ -54,7 +54,7 @@ spec:
                         The node has fewer than three peers. Check bootnodes, network
                         reachability, and firewall rules; sync will stall if peers
                         reach zero.
-                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/components/monitoring/README.md#midnight-peers-low
+                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/docs/monitoring.md#alert-design
 
               - alert: NodeContainerRestarting
                 expr: |
@@ -69,4 +69,4 @@ spec:
                         A container restarted in the last 15 minutes. Inspect the
                         previous logs and exit code for OOM or configuration errors.
                         Repeated restarts should be treated as critical.
-                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/components/monitoring/README.md#container-restarting
+                    runbook_url: https://github.com/OrangeLab-space/orangelab-cardano/blob/main/docs/monitoring.md#alert-design

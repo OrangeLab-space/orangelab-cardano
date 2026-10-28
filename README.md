@@ -81,8 +81,8 @@ The alerts are outcome-based. CPU and memory are dashboard signals, not pages:
 sync bursts are normal and Midnight memory is mostly reclaimable page cache.
 This is a full node, so validator-only alerts stay out of scope.
 
-Details and verification commands:
-[components/monitoring/README.md](./components/monitoring/README.md).
+Details, screenshots, and verification commands:
+[docs/monitoring.md](./docs/monitoring.md).
 
 ## Automation scripts (Section 3)
 

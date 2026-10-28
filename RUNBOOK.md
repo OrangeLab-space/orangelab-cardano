@@ -189,7 +189,7 @@ and repeated restarts.
 ## Monitoring
 
 `pulumi up` installs the ServiceMonitors, PodMonitors, alert rules, and Grafana
-dashboard in [components/monitoring/README.md](./components/monitoring/README.md).
+dashboard in [docs/monitoring.md](./docs/monitoring.md).
 Confirm the Prometheus targets are `UP` and the `cardano-midnight.rules` group is
 loaded.
 

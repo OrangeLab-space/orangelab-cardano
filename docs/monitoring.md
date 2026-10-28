@@ -4,17 +4,17 @@ Prometheus and Grafana monitoring for the Cardano + Midnight stack. The stack
 uses the Prometheus Operator and Grafana from the OrangeLab core stack.
 `pulumi up` installs the ServiceMonitors, PodMonitors, alert rules, and dashboard
 when `prometheus:enabled` and `prometheus:enableComponentMonitoring` are true
-(the defaults in [`Pulumi.yaml`](../../Pulumi.yaml)).
+(the defaults in [`Pulumi.yaml`](../Pulumi.yaml)).
 
 ## Files
 
-| File                                | Purpose                                          |
-| ----------------------------------- | ------------------------------------------------ |
-| `servicemonitor-cardano.yaml`       | Scrapes the Cardano node and sync exporter ports |
-| `podmonitor-cardano-db-sync.yaml`   | Scrapes DB Sync metrics on port 8080             |
-| `servicemonitor-midnight-node.yaml` | Scrapes the `midnight-node` Service metrics port |
-| `prometheus-rules.yaml`             | Cardano/Midnight alert definitions               |
-| `grafana-dashboard.json`            | Cardano + DB Sync + Midnight dashboard           |
+| File                                                                                              | Purpose                                          |
+| ------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| [`servicemonitor-cardano.yaml`](../components/monitoring/servicemonitor-cardano.yaml)             | Scrapes the Cardano node and sync exporter ports |
+| [`podmonitor-cardano-db-sync.yaml`](../components/monitoring/podmonitor-cardano-db-sync.yaml)     | Scrapes DB Sync metrics on port 8080             |
+| [`servicemonitor-midnight-node.yaml`](../components/monitoring/servicemonitor-midnight-node.yaml) | Scrapes the `midnight-node` Service metrics port |
+| [`prometheus-rules.yaml`](../components/monitoring/prometheus-rules.yaml)                         | Cardano/Midnight alert definitions               |
+| [`grafana-dashboard.json`](../components/monitoring/grafana-dashboard.json)                       | Cardano + DB Sync + Midnight dashboard           |
 
 The YAML files are consumed directly by the Pulumi `Monitoring` component, so the
 committed manifests are the deployed manifests.
@@ -87,11 +87,39 @@ height next to the node tip.
 
 The ETA is a projection from recent progress, not a guarantee. Later epochs carry
 more transactions, so replay slows down. For an authoritative block-height pair,
-use [`scripts/db-sync-progress.sh`](../../scripts/db-sync-progress.sh) and
-[`scripts/cardano-cli.sh query tip`](../../scripts/cardano-cli.sh).
+use [`scripts/db-sync-progress.sh`](../scripts/db-sync-progress.sh) and
+[`scripts/cardano-cli.sh query tip`](../scripts/cardano-cli.sh).
 
-For a project screenshot, use a time range that covers the whole sync and hide
-node names or IPs before committing the image.
+## Screenshots from the last sync operation
+
+Captured from the last sync run: Cardano is at the tip with 100% sync progress,
+DB Sync is caught up with zero lag, and Midnight is still catching up.
+
+### Cardano
+
+![Cardano dashboard row](monitoring%20-%20cardano.png)
+
+Tip, peers, epoch, sync progress, ETA, block rate, and block fetch delay.
+
+### DB Sync
+
+![DB Sync dashboard row](monitoring%20-%20syncdb.png)
+
+Database size, cache hit ratio, waiting backends, block-height lag, indexed block
+height against the node tip, and write rate.
+
+### Midnight
+
+![Midnight dashboard row](monitoring%20-%20midnight.png)
+
+Best and finalized block, peers, sync progress, remaining blocks, block rate,
+block import time, and volume IOPS.
+
+### Resources
+
+![Resources dashboard row](monitoring%20-%20resources.png)
+
+Deployment working set against configured limits, CPU, and major page faults.
 
 ## Deploy
 

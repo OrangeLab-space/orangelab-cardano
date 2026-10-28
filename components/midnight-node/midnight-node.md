@@ -65,7 +65,7 @@ pulumi up
 
 The node runs with `--prometheus-external` and serves `/metrics` on port `9615`.
 The `midnight-node` Service exposes it as `metrics`, and the
-[monitoring setup](../monitoring/README.md) scrapes it through the
+[monitoring setup](../../docs/monitoring.md) scrapes it through the
 `midnight-node` ServiceMonitor.
 
 ## Verify
