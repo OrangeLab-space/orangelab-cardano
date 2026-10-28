@@ -59,8 +59,8 @@ minutes. Aggregating avoids false positives from a terminated pod's stale series
 three peers. `NodeContainerRestarting` covers both namespaces; a restart during
 a deployment is expected.
 
-This is a **full node**, not a validator. Block-production and attestation alerts
-are out of scope until validator mode is enabled.
+This is a **full node**, not a validator, so block-production and attestation
+alerts are out of scope.
 
 ## Fresh sync
 

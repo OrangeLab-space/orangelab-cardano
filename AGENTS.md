@@ -14,7 +14,6 @@ The Pulumi stack is `lab-cardano`. Run Pulumi from the repository root.
 Read [`README.md`](./README.md) for the stack layout,
 [`RUNBOOK.md`](./RUNBOOK.md) for the operational walkthrough,
 [`docs/longhorn.md`](./docs/longhorn.md) for storage,
-[`docs/validator.md`](./docs/validator.md) for validator mode,
 [`SECURITY.md`](./SECURITY.md) for key management and incident response, and
 [`evidence/README.md`](./evidence/README.md) for evidence capture. The runbook is
 the source of truth for deployment and shutdown.

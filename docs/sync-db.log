@@ -1,0 +1,138 @@
+waiting for cardano-node socket
+waiting for cardano-node socket
+waiting for cardano-node socket
+waiting for cardano-node socket
+waiting for cardano-node socket
+/run/secrets
+Generating PGPASS file
+Connecting to network: preprod
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.75 UTC] Version number: 13.7.1.0
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.75 UTC] Git hash: ef00c76513947b356b81505ca3792b89322bd792
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.75 UTC] Enviroment variable DbSyncAbortOnPanic: False
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.75 UTC] SyncNodeParams {enpConfigFile = ConfigFile {unConfigFile = "/nix/store/b2533sxcipc88qg2y9wayidxjxmaj7gs-db-sync-config.json"}, enpSocketPath = SocketPath {unSocketPath = "/node-ipc/node.socket"}, enpMaybeLedgerStateDir = Just (LedgerStateDir {unLedgerStateDir = "/var/lib/cexplorer"}), enpMigrationDir = MigrationDir "/nix/store/75x7mkv4krkizmb44zrksqwhif1vfqxl-schema", enpPGPassSource = PGPassDefaultEnv, enpEpochDisabled = False, enpHasCache = True, enpForceIndexes = False, enpHasInOut = True, enpMaybeRollback = Nothing}
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.75 UTC] SyncOptions {soptEpochAndCacheEnabled = True, soptAbortOnInvalid = False, soptCache = True, soptPruneConsumeMigration = PruneConsumeMigration {pcmPruneTxOut = False, pcmConsumedTxOut = False, pcmSkipTxIn = False}, soptInsertOptions = InsertOptions {ioTxCBOR = False, ioInOut = True, ioUseLedger = True, ioShelley = True, ioRewards = True, ioMultiAssets = True, ioMetadata = True, ioKeepMetadataNames = Nothing, ioPlutusExtra = True, ioOffChainPoolData = False, ioOffChainVoteData = False, ioPoolStats = False, ioGov = True, ioRemoveJsonbFromSchema = False, ioTxOutVariantType = TxOutVariantCore}, soptSnapshotInterval = SnapshotIntervalConfig {sicNearTipEpoch = 580}}
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.76 UTC] Schema migration files validated
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.77 UTC] Running database migrations in mode Initial
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.77 UTC] Found maintenance_work_mem=64MB, max_parallel_maintenance_workers=2
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.77 UTC] Migration 0/69 (0.0%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.77 UTC] Migration 1/69 (1.4%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.81 UTC] Migration 2/69 (2.9%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.83 UTC] Migration 3/69 (4.3%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.84 UTC] Migration 4/69 (5.8%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.86 UTC] Migration 5/69 (7.2%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.87 UTC] Migration 6/69 (8.7%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.89 UTC] Migration 7/69 (10.1%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.91 UTC] Migration 8/69 (11.6%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.93 UTC] Migration 9/69 (13.0%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.94 UTC] Migration 10/69 (14.5%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.96 UTC] Migration 11/69 (15.9%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.98 UTC] Migration 12/69 (17.4%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:08.99 UTC] Migration 13/69 (18.8%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.01 UTC] Migration 14/69 (20.3%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.03 UTC] Migration 15/69 (21.7%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.04 UTC] Migration 16/69 (23.2%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.06 UTC] Migration 17/69 (24.6%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.08 UTC] Migration 18/69 (26.1%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.10 UTC] Migration 19/69 (27.5%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.11 UTC] Migration 20/69 (29.0%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.13 UTC] Migration 21/69 (30.4%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.14 UTC] Migration 22/69 (31.9%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.16 UTC] Migration 23/69 (33.3%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.17 UTC] Migration 24/69 (34.8%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.19 UTC] Migration 25/69 (36.2%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.20 UTC] Migration 26/69 (37.7%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.22 UTC] Migration 27/69 (39.1%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.23 UTC] Migration 28/69 (40.6%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.25 UTC] Migration 29/69 (42.0%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.27 UTC] Migration 30/69 (43.5%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.28 UTC] Migration 31/69 (44.9%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.30 UTC] Migration 32/69 (46.4%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.31 UTC] Migration 33/69 (47.8%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.33 UTC] Migration 34/69 (49.3%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.34 UTC] Migration 35/69 (50.7%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.36 UTC] Migration 36/69 (52.2%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.38 UTC] Migration 37/69 (53.6%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.39 UTC] Migration 38/69 (55.1%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.41 UTC] Migration 39/69 (56.5%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.42 UTC] Migration 40/69 (58.0%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.43 UTC] Migration 41/69 (59.4%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.45 UTC] Migration 42/69 (60.9%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.46 UTC] Migration 43/69 (62.3%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.48 UTC] Migration 44/69 (63.8%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.49 UTC] Migration 45/69 (65.2%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.51 UTC] Migration 46/69 (66.7%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.52 UTC] Migration 47/69 (68.1%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.54 UTC] Migration 48/69 (69.6%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.56 UTC] Migration 49/69 (71.0%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.57 UTC] Migration 50/69 (72.5%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.59 UTC] Migration 51/69 (73.9%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.61 UTC] Migration 52/69 (75.4%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.62 UTC] Migration 53/69 (76.8%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.64 UTC] Migration 54/69 (78.3%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.66 UTC] Migration 55/69 (79.7%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.68 UTC] Migration 56/69 (81.2%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.69 UTC] Migration 57/69 (82.6%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.71 UTC] Migration 58/69 (84.1%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.73 UTC] Migration 59/69 (85.5%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.74 UTC] Migration 60/69 (87.0%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.76 UTC] Migration 61/69 (88.4%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.77 UTC] Migration 62/69 (89.9%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.79 UTC] Migration 63/69 (91.3%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.80 UTC] Migration 64/69 (92.8%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.82 UTC] Migration 65/69 (94.2%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.83 UTC] Migration 66/69 (95.7%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.85 UTC] Migration 67/69 (97.1%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.86 UTC] Migration 68/69 (98.6%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.88 UTC] Migration 69/69 (100.0%)
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.99 UTC] All migrations were executed
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.99 UTC] New user indexes were not created. They may be created later if necessary.
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.99 UTC] SyncOptions {soptEpochAndCacheEnabled = True, soptAbortOnInvalid = False, soptCache = True, soptPruneConsumeMigration = PruneConsumeMigration {pcmPruneTxOut = False, pcmConsumedTxOut = False, pcmSkipTxIn = False}, soptInsertOptions = InsertOptions {ioTxCBOR = False, ioInOut = True, ioUseLedger = True, ioShelley = True, ioRewards = True, ioMultiAssets = True, ioMetadata = True, ioKeepMetadataNames = Nothing, ioPlutusExtra = True, ioOffChainPoolData = False, ioOffChainVoteData = False, ioPoolStats = False, ioGov = True, ioRemoveJsonbFromSchema = False, ioTxOutVariantType = TxOutVariantCore}, soptSnapshotInterval = SnapshotIntervalConfig {sicNearTipEpoch = 580}}
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.99 UTC] Using byron genesis file from: "/nix/store/q5i0m1jw83vdixw3dgsyh1zc11b3fdf4-byron-genesis.json"
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.99 UTC] Using shelley genesis file from: "/nix/store/zs32n4bw1syxpxgab76qw1c3xvfbb17m-shelley-genesis.json"
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:09.99 UTC] Using alonzo genesis file from: "/nix/store/8qnphq6yvcjspiy3z0aijfd6cv64l3hl-alonzo-genesis.json"
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:10.09 UTC] NetworkMagic: 1
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:10.09 UTC] runConsumedTxOutMigrationsMaybe: PruneConsumeMigration {pcmPruneTxOut = False, pcmConsumedTxOut = False, pcmSkipTxIn = False}
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:10.09 UTC] runConsumedTxOutMigrations: No extra migration specified
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:10.10 UTC] Initial genesis distribution present and correct
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:10.10 UTC] Total genesis supply of Ada: 30000000000.000000
+[34m[db-sync-node:Info:5][0m [2026-10-27 19:33:10.10 UTC] Inserting Shelley Genesis distribution
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:10.10 UTC] Starting DB thread
+[34m[db-sync-node:Info:153][0m [2026-10-27 19:33:10.10 UTC] Connecting to node via "/node-ipc/node.socket"
+[34m[db-sync-node.Mux:Info:153][0m [2026-10-27 19:33:10.10 UTC] Bearer on ConnectionId {localAddress = LocalAddress "", remoteAddress = LocalAddress "/ipc/node.socket"} event: New mux with protocols: [MiniProtocolInfo {miniProtocolNum = MiniProtocolNum 5, miniProtocolDir = InitiatorDirectionOnly, miniProtocolLimits = MiniProtocolLimits {maximumIngressQueue = 4294967295}, miniProtocolCapability = Nothing},MiniProtocolInfo {miniProtocolNum = MiniProtocolNum 6, miniProtocolDir = InitiatorDirectionOnly, miniProtocolLimits = MiniProtocolLimits {maximumIngressQueue = 4294967295}, miniProtocolCapability = Nothing},MiniProtocolInfo {miniProtocolNum = MiniProtocolNum 7, miniProtocolDir = InitiatorDirectionOnly, miniProtocolLimits = MiniProtocolLimits {maximumIngressQueue = 4294967295}, miniProtocolCapability = Nothing},MiniProtocolInfo {miniProtocolNum = MiniProtocolNum 9, miniProtocolDir = InitiatorDirectionOnly, miniProtocolLimits = MiniProtocolLimits {maximumIngressQueue = 4294967295}, miniProtocolCapability = Nothing}]
+[34m[db-sync-node.Mux:Info:161][0m [2026-10-27 19:33:10.10 UTC] Bearer on ConnectionId {localAddress = LocalAddress "", remoteAddress = LocalAddress "/ipc/node.socket"} event: Mux starting
+[34m[db-sync-node.Mux:Info:161][0m [2026-10-27 19:33:10.10 UTC] Bearer on ConnectionId {localAddress = LocalAddress "", remoteAddress = LocalAddress "/ipc/node.socket"} event: State: Mature
+[34m[db-sync-node.Mux:Info:161][0m [2026-10-27 19:33:10.10 UTC] Bearer on ConnectionId {localAddress = LocalAddress "", remoteAddress = LocalAddress "/ipc/node.socket"} event: Eagerly started (MiniProtocolNum 5) in InitiatorDir
+[34m[db-sync-node:Info:164][0m [2026-10-27 19:33:10.10 UTC] Starting ChainSync client
+[34m[db-sync-node.Mux:Info:161][0m [2026-10-27 19:33:10.10 UTC] Bearer on ConnectionId {localAddress = LocalAddress "", remoteAddress = LocalAddress "/ipc/node.socket"} event: Eagerly started (MiniProtocolNum 6) in InitiatorDir
+[34m[db-sync-node.Mux:Info:161][0m [2026-10-27 19:33:10.10 UTC] Bearer on ConnectionId {localAddress = LocalAddress "", remoteAddress = LocalAddress "/ipc/node.socket"} event: Eagerly started (MiniProtocolNum 7) in InitiatorDir
+[34m[db-sync-node:Info:164][0m [2026-10-27 19:33:10.10 UTC] Setting ConsistencyLevel to Unchecked
+[34m[db-sync-node.Mux:Info:161][0m [2026-10-27 19:33:10.10 UTC] Bearer on ConnectionId {localAddress = LocalAddress "", remoteAddress = LocalAddress "/ipc/node.socket"} event: Eagerly started (MiniProtocolNum 9) in InitiatorDir
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:10.10 UTC] Chain Sync client thread has restarted
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:10.10 UTC] Database tip is at slot 137439652, block 5342247
+[34m[db-sync-node:Info:164][0m [2026-10-27 19:33:10.10 UTC] Suggesting intersection points from memory: [] and from disk: [Point (At (Block {blockPointSlot = SlotNo 137030394, blockPointHash = 5e6bf81834f51c5815273d6c369e05b7c98fadc2bea3080953373365050c8c2d})),Point (At (Block {blockPointSlot = SlotNo 136598384, blockPointHash = a598548610730a90b9880b50dc219f48f112e95e8214f5aeb6f79bc88348c8c2})),Point (At (Block {blockPointSlot = SlotNo 132278396, blockPointHash = 60048916ae5970e6b7e84e897b639a7c848b1fde15829496e9b480bc2186bf69}))]
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:10.12 UTC] Delaying delete of 18402 blocks after 5323845 while rolling back to (slot 137030394, hash 5e6bf81834f51c5815273d6c369e05b7c98fadc2bea3080953373365050c8c2d). Applying blocks until a new block is found. The node is currently at Tip (SlotNo 137446368) 6a6edd473ddd0cfbe9bede674aabdc297790d8dea6d57ee260b110a394997f5d (BlockNo 5342552)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:20.26 UTC] Loaded snapshot "137030394" in 10.126673598s
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:20.26 UTC] Found snapshot for slot 137030394, hash 5e6bf81834f51c5815273d6c369e05b7c98fadc2bea3080953373365050c8c2d
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:20.26 UTC] Setting ConsistencyLevel to DBAheadOfLedger
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:20.33 UTC] Reached EpochNo 321
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:40.15 UTC] Received block which is not in the db with HeaderFields {headerFieldSlot = SlotNo 137439687, headerFieldBlockNo = BlockNo 5342248, headerFieldHash = ffbfded251486468f28b2d1484885ad45bddd5ea0ea0f4594ce12723beca086f}. Time to restore consistency.
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:40.15 UTC] Starting at epoch 321
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:40.23 UTC] Insert Conway Block: epoch 321, slot 137439687, block 5342248, hash ffbfded251486468f28b2d1484885ad45bddd5ea0ea0f4594ce12723beca086f
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:40.29 UTC] Setting ConsistencyLevel to Consistent
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.03 UTC] Running NearTip database migrations in mode NearTip
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.03 UTC] Found maintenance_work_mem=64MB, max_parallel_maintenance_workers=2
+[33m[db-sync-node:Warning:151][0m [2026-10-27 19:33:42.03 UTC] Creating Indexes. This may require an extended period of time to perform. Setting a higher maintenance_work_mem from Postgres usually speeds up this process. These indexes are not used by db-sync but are meant for clients. If you want to skip some of these indexes, you can stop db-sync, delete or modify any migration-4-* files in the schema directory and restart it.
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.03 UTC] Migration 0/9 (0.0%)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.03 UTC] Migration 1/9 (11.1%)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.05 UTC] Migration 2/9 (22.2%)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.06 UTC] Migration 3/9 (33.3%)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.08 UTC] Migration 4/9 (44.4%)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.09 UTC] Migration 5/9 (55.6%)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.11 UTC] Migration 6/9 (66.7%)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.12 UTC] Migration 7/9 (77.8%)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.14 UTC] Migration 8/9 (88.9%)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.15 UTC] Migration 9/9 (100.0%)
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.26 UTC] NearTip migrations were ran successfully.
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.66 UTC] Insert Conway Block: epoch 321, slot 137446328, block 5342550, hash 5329f46d11c33eb52f80ef54ecd47437eec55954e9efd090325b349f7028f802
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.68 UTC] Insert Conway Block: epoch 321, slot 137446350, block 5342551, hash 07018856513fce6cbf774ccef7a048516bc1dee9b0a9e1f377584d5dc9c43926
+[34m[db-sync-node:Info:151][0m [2026-10-27 19:33:42.68 UTC] Insert Conway Block: epoch 321, slot 137446368, block 5342552, hash 6a6edd473ddd0cfbe9bede674aabdc297790d8dea6d57ee260b110a394997f5d
