@@ -13,10 +13,9 @@ The Pulumi stack is `lab-cardano`. Run Pulumi from the repository root.
 
 Read [`README.md`](./README.md) for the stack layout,
 [`RUNBOOK.md`](./RUNBOOK.md) for the operational walkthrough,
-[`docs/longhorn.md`](./docs/longhorn.md) for storage,
-[`SECURITY.md`](./SECURITY.md) for key management and incident response, and
-[`evidence/README.md`](./evidence/README.md) for evidence capture. The runbook is
-the source of truth for deployment and shutdown.
+[`docs/longhorn.md`](./docs/longhorn.md) for storage, and
+[`SECURITY.md`](./SECURITY.md) for key management and incident response. The
+runbook is the source of truth for deployment and shutdown.
 
 ## External Stack Boundary
 
@@ -48,8 +47,6 @@ the source of truth for deployment and shutdown.
   `pulumi up --yes -r` over hand-deleting individual resources.
 - Shell: `bash -n scripts/<script>.sh`; run `shellcheck -x` when available.
   `npm test` does not cover shell scripts or Markdown.
-- Python: `python3 -m py_compile scripts/*.py`; run `--help` for usage. The
-  Section 3 scripts use only the standard library.
 - Markdown: `npx prettier --write <files>` and `npx prettier --check <files>`.
   The repo config uses `printWidth: 90` and normalizes tables.
 
@@ -124,28 +121,20 @@ the source of truth for deployment and shutdown.
   tables and short sections over long prose.
 - After changing docs, check relative links/anchors and config keys against the
   code and `Pulumi.yaml`. Do not restate the config table in prose.
-- The runbook’s main flow is deploy → verify Cardano/DB Sync → deploy Midnight →
-  capture evidence. Keep advanced operations out of that path.
+- The runbook’s main flow is deploy → verify Cardano/DB Sync → deploy Midnight.
+  Keep advanced operations out of that path.
 
-## Evidence and Scripts
+## Scripts
 
-- `evidence/capture-evidence.sh` writes one UTC-stamped directory under
-  `evidence/`. Capture twice, at least 10 minutes apart, so the pair shows block
-  progression. Evidence docs live in `evidence/README.md`. Remove older runs
-  only after the new pair is verified.
-- Evidence contains no secrets, but it can contain internal cluster IPs,
-  hostnames, node names, and public on-chain data (addresses, transaction hashes,
-  and amounts in Midnight logs). Do not add credentials or other secrets. Review
-  it before publishing if identifying infrastructure data matters.
 - `scripts/cardano-cli.sh` runs `cardano-cli` inside the Cardano pod and derives
   the network flag from `cardano:network` (`preprod` → 1, `preview` → 2,
   `mainnet` → `--mainnet`). Custom testnets use `CARDANO_NETWORK_MAGIC` or
   `cardano:networkMagic`.
+- `scripts/db-sync-progress.sh` queries DB Sync's `block` table and reports the
+  latest block plus a recency-based `sync_percent`.
 - Scripts in this repo are stack-specific, unlike the generic shared tools in
   `orange-lab/scripts`. Shell scripts use `set -euo pipefail` and block section
-  comments for distinct phases. Python scripts use the standard library only,
-  `argparse`, and atomic state writes. Section 3 script usage lives in
-  [`scripts/README.md`](./scripts/README.md).
+  comments for distinct phases.
 
 ## Code Style
 

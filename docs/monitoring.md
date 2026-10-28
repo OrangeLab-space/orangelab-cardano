@@ -7,7 +7,7 @@ You can use Grafana dashboard (_Cardano + Midnight_) or below commands to monito
 ./scripts/db-sync-progress.sh
 ```
 
-Monitoring components (alerts, dashboards) in [components/monitoring](./components/monitoring).
+Monitoring components (alerts, dashboards) in [components/monitoring](../components/monitoring).
 `pulumi up` installs the ServiceMonitors, PodMonitors, Prometheus rules, and
 Grafana dashboard. The dashboard is grouped into Cardano, DB Sync, Midnight, and
 resource sections.
