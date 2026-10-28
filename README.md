@@ -2,7 +2,7 @@
 
 ## Documentation
 
-- [Monitoring and Grafana screenshots](./docs/monitoring.md)
+- [Monitoring](./docs/monitoring.md)
 - [Security](./SECURITY.md)
 - [Runbook](./RUNBOOK.md)
 
@@ -61,6 +61,8 @@ Artifacts from the last sync run:
 - [`sync-cardano.json`](./docs/sync-cardano.json) — Cardano tip and sync progress
 - [`sync-db.log`](./docs/sync-db.log) — DB Sync logs
 - [`sync-midnight-node.log`](./docs/sync-midnight-node.log) — Midnight node logs
+
+Grafana screenshots from last sync run at [docs/monitoring.md](./docs/monitoring.md)
 
 ## Project structure
 
