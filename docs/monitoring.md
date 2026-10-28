@@ -1,10 +1,16 @@
 # Monitoring
 
-Prometheus and Grafana monitoring for the Cardano + Midnight stack. The stack
-uses the Prometheus Operator and Grafana from the OrangeLab core stack.
-`pulumi up` installs the ServiceMonitors, PodMonitors, alert rules, and dashboard
-when `prometheus:enabled` and `prometheus:enableComponentMonitoring` are true
-(the defaults in [`Pulumi.yaml`](../Pulumi.yaml)).
+You can use Grafana dashboard (_Cardano + Midnight_) or below commands to monitor progress.
+
+```sh
+./scripts/cardano-cli.sh query tip
+./scripts/db-sync-progress.sh
+```
+
+Monitoring components (alerts, dashboards) in [components/monitoring](./components/monitoring).
+`pulumi up` installs the ServiceMonitors, PodMonitors, Prometheus rules, and
+Grafana dashboard. The dashboard is grouped into Cardano, DB Sync, Midnight, and
+resource sections.
 
 ## Files
 

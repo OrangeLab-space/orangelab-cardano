@@ -1,5 +1,11 @@
 # Cardano Stack
 
+## Documentation
+
+- [Monitoring and Grafana screenshots](./docs/monitoring.md)
+- [Security](./SECURITY.md)
+- [Runbook](./RUNBOOK.md)
+
 ## Prerequisites
 
 Kubernetes cluster has to be provisioned, see https://github.com/OrangeLab-space/orange-lab
@@ -56,47 +62,21 @@ Artifacts from the last sync run:
 - [`sync-db.log`](./docs/sync-db.log) — DB Sync logs
 - [`sync-midnight-node.log`](./docs/sync-midnight-node.log) — Midnight node logs
 
-## Monitoring
+## Project structure
 
-You can use Grafana dashboard (_Cardano + Midnight_) or below commands to monitor progress.
-
-```sh
-./scripts/cardano-cli.sh query tip
-./scripts/db-sync-progress.sh
-```
-
-Monitoring components (alerts, dashboards) in [components/monitoring](./components/monitoring).
-`pulumi up` installs the ServiceMonitors, PodMonitors, Prometheus rules, and
-Grafana dashboard. The dashboard is grouped into Cardano, DB Sync, Midnight, and
-resource sections.
-
-| Alert                     | Signal                                       | Response                                                             |
-| ------------------------- | -------------------------------------------- | -------------------------------------------------------------------- |
-| `CardanoTipStalled`       | Tip unchanged for 15 minutes                 | Check logs, peers, disk, and DB Sync.                                |
-| `MidnightBlockStalled`    | Best block unchanged for 15 minutes          | Check the database, RPC, peers, and node logs.                       |
-| `MidnightPeersLow`        | Peer count below 3 for 10 minutes            | Check bootnodes, network reachability, and firewall rules.           |
-| `NodeContainerRestarting` | Any container restart in the last 15 minutes | Inspect previous logs and exit code; repeated restarts are critical. |
-
-Details, screenshots, and verification commands:
-[docs/monitoring.md](./docs/monitoring.md).
-
-## Security
-
-See [SECURITY.md](./SECURITY.md)
-
-## Infrastructure as Code
-
-This stack uses Pulumi, not Terraform. The Section 5 equivalents are:
-
-- **Modules:** `components/cardano`, `midnight-node`, `midnight-indexer`, and
-  `monitoring`.
-- **Environments:** `Pulumi.yaml` defaults plus stack config in `Pulumi.<stack>.yaml`
-- **State:** the Pulumi backend; use a remote backend with locking for shared
-  environments.
-- **Dependencies:** `index.ts` wires Cardano → Midnight → optional indexer; DB
-  Sync waits on the node socket, other components wait for database
-- **Checks:** `npm test` and `pulumi preview`.
-- **Deploy:** `pulumi up`; teardown: `pulumi destroy`.
+| Path                                                             | Purpose                                                             |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------- |
+| [`index.ts`](./index.ts)                                         | Pulumi entrypoint; wires Cardano, Midnight, indexer, and monitoring |
+| [`components/cardano/`](./components/cardano/)                   | Cardano relay, DB Sync, PostgreSQL, and sync exporter               |
+| [`components/midnight-node/`](./components/midnight-node/)       | Midnight full node                                                  |
+| [`components/midnight-indexer/`](./components/midnight-indexer/) | Optional GraphQL indexer; requires an archive-pruned node           |
+| [`components/monitoring/`](./components/monitoring/)             | ServiceMonitors, PodMonitors, alert rules, and Grafana dashboard    |
+| [`Pulumi.yaml`](./Pulumi.yaml)                                   | Pulumi runtime and non-secret stack defaults                        |
+| `Pulumi.<stack>.yaml`                                            | Local stack configuration and secrets (gitignored)                  |
+| [`docs/`](./docs/)                                               | Monitoring, storage, and sync reference material                    |
+| [`scripts/`](./scripts/)                                         | Cardano CLI and DB Sync progress helpers                            |
+| [`RUNBOOK.md`](./RUNBOOK.md)                                     | Deployment, shutdown, and troubleshooting                           |
+| [`SECURITY.md`](./SECURITY.md)                                   | Key management and incident response                                |
 
 ## Assumptions
 
