@@ -9,7 +9,7 @@
 | Endpoints     | `endpoints.cluster.midnight-node` (RPC) and `midnight-node-p2p` |
 
 A Midnight full node. `midnight-node:network` selects the network; this stack
-defaults to `preprod`. It follows Cardano through the DB Sync PostgreSQL
+defaults to `preview`. It follows Cardano through the DB Sync PostgreSQL
 database and exposes a cluster-only JSON-RPC endpoint on port 9944.
 
 ## Prerequisites
@@ -46,12 +46,12 @@ pulumi up
 | ---------------------------------------- | --------------------------- | ----------------------------------------------- |
 | `midnight-node:enabled`                  | `false`                     | Deploy the node                                 |
 | `midnight-node:image`                    | `.../midnight-node:1.0.400` | Midnight node image                             |
-| `midnight-node:network`                  | `preprod`                   | Network preset; must match `cardano:network`    |
+| `midnight-node:network`                  | `preview`                   | Network preset; must match `cardano:network`    |
 | `midnight-node:nodeName`                 | required                    | Human-readable name unique on the network       |
-| `midnight-node:bootnodes`                | preprod boot nodes          | Boot node multiaddresses for the target network |
-| `midnight-node:cardanoSecurityParameter` | `2160`                      | Cardano security parameter                      |
+| `midnight-node:bootnodes`                | preview boot nodes          | Boot node multiaddresses for the target network |
+| `midnight-node:cardanoSecurityParameter` | `432`                       | Cardano security parameter                      |
 | `midnight-node:poolLimit`                | `35`                        | Transaction pool limit                          |
-| `midnight-node:blockStabilityMargin`     | `10`                        | Chain config value; FNO docs use `30`           |
+| `midnight-node:blockStabilityMargin`     | `10`                        | Node 1.0.400 default; FNO docs use `30`         |
 | `midnight-node:allowNonSsl`              | `true`                      | Allow non-SSL DB connections inside the cluster |
 | `midnight-node:validator`                | `false`                     | Validator mode; requires overlay and keys       |
 | `midnight-node:reservedNodes`            | unset                       | Reserved peers; required when validator is true |

@@ -8,7 +8,7 @@ This stack runs the following components:
 - Midnight full node
 - optional Midnight indexer (archive node required)
 
-The examples use `preprod`. For another network, set `cardano:network` and
+The examples use `preview`. For another network, set `cardano:network` and
 `midnight-node:network` to the same value and update the Midnight bootnodes.
 
 ## Architecture
@@ -59,15 +59,16 @@ On a new stack:
 pulumi up --yes
 ```
 
-For a clean restart, destroy the existing stack first. Named volumes survive;
-delete them only for a full replay from genesis:
+For a clean restart, destroy the existing stack first. Dynamic volumes are
+deleted with the stack and replay from genesis; named volumes survive. Confirm
+the storage mode before destroying:
 
 ```sh
 pulumi destroy --yes
 pulumi up --yes
 ```
 
-DB Sync replays Cardano from genesis, six hours or more on preprod.
+DB Sync replays Cardano from genesis; allow several hours.
 
 The first ~10 minutes are initialization: CNPG runs `initdb`, DB Sync creates
 its schema, and Cardano begins downloading blocks. Do not snapshot or clone
@@ -152,10 +153,10 @@ on its own volume. The API is cluster-only; use `kubectl port-forward`.
 
 | Gotcha                                | Detail                                                                                                                          |
 | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `CARDANO_SECURITY_PARAMETER=432`      | FNO page uses the Preview value. Preprod is **2160**; this stack sets 2160.                                                     |
+| `CARDANO_SECURITY_PARAMETER=432`      | Preview is **432**; preprod and mainnet use **2160**. This stack sets 432.                                                      |
 | Cardano 10.6.2 vs 11.0.1              | DB Sync 13.7.1.0 needs Cardano 11.0.1. Do not mix doc versions.                                                                 |
 | Unix socket paths                     | Node uses `/ipc/node.socket`; DB Sync uses `/node-ipc/node.socket`. Same volume; this stack co-locates them.                    |
-| DB Sync takes hours                   | Replays from genesis; six hours or more on preprod. Start it first.                                                             |
+| DB Sync takes hours                   | Replays from genesis; allow several hours. Start it first.                                                                      |
 | `relation "ma_tx_out" does not exist` | Midnight started before DB Sync created its schema. Disable Midnight until DB Sync is at the tip; it will crash-loop otherwise. |
 | `No latest block on chain`            | DB Sync is not caught up. Wait; do not restart Midnight repeatedly.                                                             |
 | CNPG app user                         | The app role is not a superuser by default; this stack grants `SUPERUSER` for DB Sync.                                          |
@@ -163,7 +164,7 @@ on its own volume. The API is cluster-only; use `kubectl port-forward`.
 | Mithril                               | Not automated. Cardano DB is only ~12 GiB, so DB Sync remains the long pole.                                                    |
 | RPC exposure                          | 9944 has unsafe methods. Service is cluster-only and `--rpc-methods safe` applies. Do not publish it.                           |
 | Root containers                       | Upstream images run as root and write to volumes. Single-node convenience; harden for production.                               |
-| `pulumi destroy` keeps data           | Named volumes survive the stack. Delete them only for a full replay from genesis.                                               |
+| `pulumi destroy` and storage          | Dynamic volumes are deleted; named volumes survive. Confirm `fromVolume` settings before destroying.                            |
 | Storage clone too early               | Wait until CNPG `initdb` and DB Sync have created their schema (~10 minutes). Never clone an empty `cardano-db` volume.         |
 
 ## Limitations

@@ -79,8 +79,8 @@ runbook is the source of truth for deployment and shutdown.
   namespaces, storage, services, and secrets. Do not add raw Kubernetes
   manifests for things the library already models.
 - `cardano:network` and `midnight-node:network` must match. The bundled config
-  uses `preprod`. Keep code, docs, and scripts network-agnostic; do not hardcode
-  preprod or a testnet magic. Use `scripts/cardano-cli.sh`, which derives the
+  uses `preview`. Keep code, docs, and scripts network-agnostic; do not hardcode
+  a network or a testnet magic. Use `scripts/cardano-cli.sh`, which derives the
   network flag from `cardano:network`.
 - Config defaults live in `Pulumi.yaml` only. Use `config.require*` for keys with
   defaults and `config.get*` + `??` only for genuinely optional settings. Never
@@ -112,8 +112,8 @@ runbook is the source of truth for deployment and shutdown.
 
 - A component lives in `components/<name>/<name>.ts` with a companion
   `<name>.md`.
-- Keep component docs network-agnostic. Say “this stack defaults to preprod”,
-  not “the component is preprod”.
+- Keep component docs network-agnostic. Say “this stack defaults to preview”,
+  not “the component is preview”.
 - Keep `README.md` focused on the simple dynamic-storage path. Put static-volume
   details, failure modes, tuning, and troubleshooting in `RUNBOOK.md` or the
   component doc’s Gotchas section.

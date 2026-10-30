@@ -18,7 +18,7 @@ config:
     # longhorn:backupAllVolumes: false # read from the core stack by default
 
     cardano:image: ghcr.io/intersectmbo/cardano-node:11.0.1
-    cardano:network: preprod
+    cardano:network: preview
     cardano:storageSize: 120Gi
     cardano:storageClass: longhorn-large
     cardano:storage/backupEnabled: false
@@ -50,13 +50,13 @@ config:
 
     midnight-node:enabled: false
     midnight-node:image: ghcr.io/midnightntwrk/midnight-node:1.0.400
-    midnight-node:network: preprod
-    midnight-node:bootnodes: '/dns/bootnode-1.preprod.midnight.network/tcp/30333/ws/p2p/12D3KooWQxxUgq7ndPfAaCFNbAxtcKYxrAzTxDfRGNktF75SxdX5,/dns/bootnode-2.preprod.midnight.network/tcp/30333/ws/p2p/12D3KooWNrUBs22FfmgjqFMa9ZqKED2jnxwsXWw5E4q2XVwN35TJ'
+    midnight-node:network: preview
+    midnight-node:bootnodes: '/dns/bootnode-1.preview.midnight.network/tcp/30333/ws/p2p/12D3KooWK66i7dtGVNSwDh9tTeqov1q6LSdWsRLJvTyzTCaywYgK,/dns/bootnode-2.preview.midnight.network/tcp/30333/ws/p2p/12D3KooWHqFfXFwb7WW4jwR8pr4BEf562v5M6c8K3CXAJq4Wx6ym'
     # Required; use a name unique on the network
     # midnight-node:nodeName: <node-name>
-    midnight-node:cardanoSecurityParameter: 2160
+    midnight-node:cardanoSecurityParameter: 432
     midnight-node:poolLimit: 35
-    # FNO docs use 30; the preprod chain config uses 10
+    # FNO docs use 30; node 1.0.400 uses 10
     midnight-node:blockStabilityMargin: 10
     # v1 uses non-SSL inside the cluster; see RUNBOOK for the TLS path
     midnight-node:allowNonSsl: true

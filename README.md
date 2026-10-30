@@ -83,7 +83,7 @@ Grafana screenshots from last sync run at [docs/monitoring.md](./docs/monitoring
 ## Assumptions
 
 - One Kubernetes cluster with the OrangeLab core stack already deployed.
-- Named Longhorn storage is used; one replica, no HA.
+- Longhorn storage uses one replica; no HA.
 - The stack runs a full node. Validator keys and the WireGuard overlay are gated.
-- Preprod is the default; other networks need matching config and bootnodes.
+- Preview is the default; other networks need matching config and bootnodes.
 - Lab secrets live in Pulumi state; production uses external secret management.

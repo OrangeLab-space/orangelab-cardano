@@ -12,15 +12,15 @@
 | Endpoints        | `endpoints.cluster.cardano-p2p`                                                |
 
 A Cardano relay, `cardano-db-sync`, and a CloudNativePG PostgreSQL database.
-`cardano:network` selects the network; this stack defaults to `preprod`. DB Sync
+`cardano:network` selects the network; this stack defaults to `preview`. DB Sync
 indexes Cardano into PostgreSQL; the Midnight node reads that database.
 
 ## Prerequisites
 
 - Core stack with Longhorn and CloudNativePG.
 - `orangelab:coreStackRef` and `orangelab:routingProvider` set.
-- Preprod data: Cardano DB ~12 GiB, PostgreSQL ~16 GiB, DB Sync ledger ~2 GiB.
-  The node and DB Sync share one 120Gi volume.
+- Testnet data (preprod reference): Cardano DB ~12 GiB, PostgreSQL ~16 GiB,
+  DB Sync ledger ~2 GiB. The node and DB Sync share one 120Gi volume.
 
 ## Storage
 
@@ -48,15 +48,15 @@ This component deploys on every `pulumi up`; it has no `enabled` flag.
 pulumi up
 ```
 
-DB Sync replays Cardano from genesis, six hours or more on preprod. Leave it
-running overnight.
+DB Sync replays Cardano from genesis; allow several hours. Leave it running
+overnight.
 
 ## Configuration
 
 | Key                                 | Default                                    | Description                                    |
 | ----------------------------------- | ------------------------------------------ | ---------------------------------------------- |
 | `cardano:image`                     | `ghcr.io/intersectmbo/cardano-node:11.0.1` | Cardano node image                             |
-| `cardano:network`                   | `preprod`                                  | Network preset (stack config)                  |
+| `cardano:network`                   | `preview`                                  | Network preset (stack config)                  |
 | `cardano:storageSize`               | `120Gi`                                    | Node `/data/db` + DB Sync `/var/lib/cexplorer` |
 | `cardano:storageClass`              | `longhorn-large`                           | One replica; dynamic phase only                |
 | `cardano:storage/backupEnabled`     | `false`                                    | Backups disabled for reconstructible data      |
@@ -119,10 +119,10 @@ For a custom testnet, set `CARDANO_NETWORK_MAGIC`.
 
 ## Gotchas
 
-- Set the security parameter per network: `2160` on preprod, `432` on preview.
-  The FNO runbook's `432` is the preview value; this stack uses `2160`.
+- Set the security parameter per network: `432` on preview, `2160` on preprod
+  and mainnet. This stack uses `432`.
 - DB Sync 13.7.1.0 requires Cardano node 11.0.1 after the Van Rossem change. The
   FNO page's 10.6.2 is stale.
 - CNPG defaults are not tuned. The FNO docs recommend `shared_buffers=4GB`;
-  preprod-sized data starts fine with defaults. See [RUNBOOK.md](../../RUNBOOK.md).
+  testnet-sized data starts fine with defaults. See [RUNBOOK.md](../../RUNBOOK.md).
 - The Cardano and DB Sync images are amd64-only.
